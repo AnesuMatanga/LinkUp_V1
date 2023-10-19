@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 public class MainActivity extends AppCompatActivity {
 
     //Initialise
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Check which button was clicked and do something
                 if (button == linkUpButton){
+                    //Firebase.analytics.logEvent("linkUp clicked", null);
+
                     //Intent to move to the desired activity
                     Intent intent = new Intent(MainActivity.this, LinkUpActivity.class);
                     startActivity(intent);

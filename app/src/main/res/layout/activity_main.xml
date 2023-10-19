@@ -14,7 +14,7 @@
         android:layout_width="365dp"
         android:layout_height="412dp"
         android:layout_gravity="center"
-        android:src="@drawable/HomeLogo2" />
+        android:src="@drawable/homelogo2" />
 
     <TextView
         android:id="@+id/textView"
