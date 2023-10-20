@@ -65,14 +65,9 @@ public class MainActivity extends AppCompatActivity {
                 //Firebase.analytics.logEvent("linkUp clicked", null);
 
                 //Intent to move to the desired activity
-                //Intent intent = new Intent(MainActivity.this, LinkUpActivity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, LinkUpActivity.class);
+                startActivity(intent);
 
-                FirebaseAuth.getInstance().signOut();
-                //Sent to Login page
-                Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(loginIntent);
-                finish();
             }
         });
 
@@ -82,8 +77,13 @@ public class MainActivity extends AppCompatActivity {
                 //Intent to move to the desired activity
                 //Check which button was clicked and do something
                 System.out.println("Clicked findFriendButton");
-                Intent intent = new Intent(MainActivity.this, FindFriendActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(MainActivity.this, FindFriendActivity.class);
+                //startActivity(intent);
+                FirebaseAuth.getInstance().signOut();
+                //Sent to Login page
+                Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(loginIntent);
+                finish();
             }
         });
 
