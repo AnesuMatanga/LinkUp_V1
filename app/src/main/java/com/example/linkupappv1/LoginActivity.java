@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -73,8 +74,8 @@ public class LoginActivity extends AppCompatActivity {
                 String email, password;
 
                 //Get the email and password and get string values
-                password = lLoginPassword.getText().toString();
-                email = lLoginEmail.getText().toString();
+                password = lLoginPassword.getText().toString().trim();
+                email = lLoginEmail.getText().toString().trim();
 
                 //Check if email and password is empty
                 if(password.equals("")){
@@ -88,6 +89,21 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Enter your Email", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                //Email format validation
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    lProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(LoginActivity.this, "Enter a valid Email Address", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Check password strength by length
+                if (password.length() < 6){
+                    lProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(LoginActivity.this, "Password should be atleast 6 characters", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
 
                 //Now sign in using email and password for a User using Firebase Library Docs
                 mAuth.signInWithEmailAndPassword(email, password)

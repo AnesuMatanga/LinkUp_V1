@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -72,9 +73,10 @@ public class RegisterActivity extends AppCompatActivity {
                 //Initialise email and password to read from the editText
                 String email, password;
 
-                //Get the email and password and get string values
-                password = rRegPassword.getText().toString();
-                email = rRegEmail.getText().toString();
+                //Password & Email validation at client side
+                //Get the email and password and get string values, trim any white spaces
+                password = rRegPassword.getText().toString().trim();
+                email = rRegEmail.getText().toString().trim();
 
                 //Check if email and password is empty
                 if(password.equals("")){
@@ -86,6 +88,20 @@ public class RegisterActivity extends AppCompatActivity {
                 if(email.equals("")){
                     //Sent a toast message
                     Toast.makeText(RegisterActivity.this, "Enter your Email", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Email format validation
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    rProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(RegisterActivity.this, "Enter a valid Email Address", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Check password strength by length
+                if (password.length() < 6){
+                    rProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(RegisterActivity.this, "Password should be atleast 6 characters", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
