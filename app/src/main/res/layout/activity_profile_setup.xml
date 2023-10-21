@@ -17,7 +17,7 @@
         android:id="@+id/profileUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:hint="Username:"
         android:layout_marginTop="20dp" />
 
@@ -25,23 +25,23 @@
         android:id="@+id/profileStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:hint="Bio:"
         android:layout_marginTop="20dp" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/profileInterests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
-        android:hint="Interests:"
-        android:layout_marginTop="20dp" />
+        android:hint="Enter interests (e.g football, cooking)"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"/>
 
     <EditText
         android:id="@+id/profileLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:hint="Your Location:"
         android:layout_marginTop="20dp" />
 

@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -38,8 +40,24 @@ public class ProfileSetupActivity extends AppCompatActivity {
     //Declare the document to store userData as Firestore cloud saves in docs
     private DocumentReference userProfileDocRef;
 
-    EditText pUsernameET, pBioET, pInterestsET, pLocationET;
+    EditText pUsernameET, pBioET, pLocationET;
     Button pProfileSaveBtn;
+
+    //For interests to use in autoCompleteTextView
+    AutoCompleteTextView pInterestsET;
+    //Adding as many interests that i can think of to try autoComplete for user
+    String[] interestsList = {"football", "soccer", "cooking", "braiding", "gaming", "reading",
+        "travelling", "hiking", "baking", "Photography", "Traveling", "Cooking", "Blogging", "Gaming", "Hiking", "Reading",
+            "Writing", "Painting", "Drawing", "Dancing", "Yoga", "Meditation", "Running", "Swimming", "Cycling", "Gardening",
+            "DIY Projects", "Music", "Playing Instruments", "Movies", "Theatre", "Fashion", "Shopping", "Crafts", "Pottery",
+            "Bird Watching", "Fishing", "Hunting", "Surfing", "Skating", "Snowboarding", "Skiing", "Camping", "Backpacking",
+            "Fitness", "Bodybuilding", "Martial Arts", "Collecting (e.g., stamps, coins, vintage items)", "Wine Tasting", "Brewing", "Knitting",
+            "Crocheting", "Scuba Diving", "Rock Climbing", "Astronomy", "Puzzle Solving", "Board Games", "Singing", "Podcasting", "Volunteering",
+            "Philanthropy", "Digital Art", "Graphic Design", "Web Development", "Animation", "Basketball", "Soccer", "Tennis", "Golf", "Rugby",
+            "Cricket", "Pet Care", "Horse Riding", "Drones", "Robotics", "Programming", "Magic", "Stand-up Comedy", "Investing", "Stock Trading", "Travel Vlogging",
+            "Photography Vlogging", "Cooking Vlogging", "Lifestyle Blogging", "Adventure Sports", "Motorcycling", "Car Racing", "Digital Marketing", "Startups",
+            "Entrepreneurship", "Creative Writing", "Eco-friendly Living", "Sustainability", "Wildlife Conservation", "Renewable Energy", "Cultural Festivals", "Languages", "History", "Archaeology", "Urban Exploration", "Geocaching",
+            "Metal Detecting", "Sculpting", "Museum Visits", "Theme Parks", "Aquariums", "Zoos"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +76,11 @@ public class ProfileSetupActivity extends AppCompatActivity {
         pInterestsET = findViewById(R.id.profileInterests);
         pLocationET = findViewById(R.id.profileLocation);
         pProfileSaveBtn = findViewById(R.id.profileSaveBtn);
+
+        //Set array adapter to use with the pInterestsET to populate from the interestsList
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, interestsList);
+        pInterestsET.setAdapter(adapter);
+
 
         //Check if User Not Logged in
         if (currentUser == null){
@@ -85,6 +108,14 @@ public class ProfileSetupActivity extends AppCompatActivity {
         String bio = pBioET.getText().toString();
         String interests = pInterestsET.getText().toString();
         String location = pLocationET.getText().toString();
+
+        //To validate interest input interest from user
+        String[] userInterests = interests.split(",");
+        if(userInterests.length > 3){
+            Toast.makeText(ProfileSetupActivity.this, "Please enter a maximum of 3 Interests",
+                    Toast.LENGTH_SHORT);
+            return;
+        }
 
         //Validate the inputs first before saving profile
         if(username.isEmpty()){
