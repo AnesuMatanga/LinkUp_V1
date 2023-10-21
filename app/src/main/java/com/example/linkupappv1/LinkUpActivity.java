@@ -3,6 +3,7 @@ package com.example.linkupappv1;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -10,13 +11,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Firebase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,11 +32,44 @@ public class LinkUpActivity extends AppCompatActivity {
     public static final String AUTHOR_KEY = "author";
     public static final String QUOTE_KEY = "quote";
 
+    TextView lQuoteFetched;
+
     private DocumentReference mDocRef = FirebaseFirestore.getInstance().document("sampleData/inspiration");
 
     //Create Objects
     EditText lUserEmail, lUserName;
     Button lSaveButton;
+    Button lFetchButton;
+
+    //Get data in real time using onStart()
+    protected void onStart() {
+        super.onStart();
+
+        //Since it happens so fast, if you want to notify exactly when it happens
+        //DocumentListenOptions verboseOptions = new DocumentListenOptions();
+        //verboseOptions.includeMetadataChanges();
+
+        //Use 'this' to make sure the listener is not used when needed to avoid over battery usage for user and also save cost
+        mDocRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                if (documentSnapshot.exists()) {
+                    String quoteText = documentSnapshot.getString(QUOTE_KEY);
+                    String authorText = documentSnapshot.getString(AUTHOR_KEY);
+
+                    //Set the text Value into the textView
+                    lQuoteFetched.setText("\"" + quoteText + "\" -- " + authorText);
+
+                    Toast.makeText(LinkUpActivity.this, "Updated Quote From Cloud!",
+                            Toast.LENGTH_SHORT).show();
+
+                } else if (error != null){
+                    Log.w(TAG, "Got an exception!", error);
+                }
+            }
+        });
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +79,9 @@ public class LinkUpActivity extends AppCompatActivity {
         lUserEmail = findViewById(R.id.userEmail);
         lUserName = findViewById(R.id.userName);
         lSaveButton = findViewById(R.id.saveButton);
+        lFetchButton = findViewById(R.id.fetchButton);
+
+        lQuoteFetched = findViewById(R.id.fetchedQuote);
 
         lSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +90,37 @@ public class LinkUpActivity extends AppCompatActivity {
             }
         });
 
+        lFetchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fetchQuote();
+            }
+        });
+
+    }
+
+    public void fetchQuote() {
+        mDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    String quoteText = documentSnapshot.getString(QUOTE_KEY);
+                    String authorText = documentSnapshot.getString(AUTHOR_KEY);
+
+                    //Set the text Value into the textView
+                    lQuoteFetched.setText("\"" + quoteText + "\" -- " + authorText);
+
+                    Toast.makeText(LinkUpActivity.this, "Fetched Quote From Cloud!",
+                            Toast.LENGTH_SHORT).show();
+
+                    //If want to get all the data fetch at once
+                    //Map<String, Object> myData = documentSnapshot.getData();
+
+                    //For more sophisticated projects toObject get data and set as fields
+                    //InspiringQuote myQuote = documentSnapshot.toObject(InspiringQuote.class);
+                }
+            }
+        });
     }
 
     public void whatUser() {

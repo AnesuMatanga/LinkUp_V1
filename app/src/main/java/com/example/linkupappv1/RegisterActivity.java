@@ -22,6 +22,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Class for First Time users of the app to register
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     //Create objects
@@ -32,7 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
     TextView rClickToLogin;
 
     //Check if user is already logged in before asking in onStart(), Firebase
-    @Override
+  /*  @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -46,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
             //Close this activity
             finish();
         }
-    }
+    } */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     //Intent to open Login page after
                                     //Create an intent to open LoginActivity
-                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                    Intent intent = new Intent(getApplicationContext(), ProfileSetupActivity.class);
                                     //Starting activity for the call passing the intent object
                                     startActivity(intent);
                                     finish();

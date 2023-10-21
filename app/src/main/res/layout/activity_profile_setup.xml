@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ProfileSetupActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="145dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/black_girl_prof" />
+
+    <EditText
+        android:id="@+id/profileUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:hint="Username:"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:id="@+id/profileStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:hint="Bio:"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:id="@+id/profileInterests"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:hint="Interests:"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:id="@+id/profileLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:hint="Your Location:"
+        android:layout_marginTop="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/profileSaveBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="Save"
+            android:layout_marginTop="5dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>
