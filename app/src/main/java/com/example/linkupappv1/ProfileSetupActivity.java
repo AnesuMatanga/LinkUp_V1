@@ -3,9 +3,11 @@ package com.example.linkupappv1;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,14 +15,22 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +40,13 @@ import java.util.Map;
  */
 
 public class ProfileSetupActivity extends AppCompatActivity {
+
+    //Make the profile data keys public static for global access
+    public static final String PROFILE_PIC_KEY = "profile_pic";
+    public static final String USERNAME_KEY = "username";
+    public static final String BIO_KEY = "bio";
+    public static final String INTERESTS_KEY = "interests";
+    public static final String LOCATION_KEY = "location";
 
     //Set up a Firestore DB to later store user profile details
     FirebaseFirestore db;
@@ -41,7 +58,18 @@ public class ProfileSetupActivity extends AppCompatActivity {
     private DocumentReference userProfileDocRef;
 
     EditText pUsernameET, pBioET, pLocationET;
-    Button pProfileSaveBtn;
+    Button pProfileSaveBtn, pProfilePicUploadBtn;
+
+    //1 for yes for request to pick an image
+    private static final int PICK_IMAGE_REQUEST = 1;
+    ImageView pProfileImage;
+    ProgressBar pProfileUploadPB;
+
+    //URL string for profile image after uploading to storage to save in firestore
+    String pProfilePicURL;
+
+    //Using Firebase storage for uploading image to storage for User profiles
+    private StorageReference pStorageReference;
 
     //For interests to use in autoCompleteTextView
     AutoCompleteTextView pInterestsET;
@@ -59,6 +87,31 @@ public class ProfileSetupActivity extends AppCompatActivity {
             "Entrepreneurship", "Creative Writing", "Eco-friendly Living", "Sustainability", "Wildlife Conservation", "Renewable Energy", "Cultural Festivals", "Languages", "History", "Archaeology", "Urban Exploration", "Geocaching",
             "Metal Detecting", "Sculpting", "Museum Visits", "Theme Parks", "Aquariums", "Zoos"};
 
+
+    //Get data in real time from firestore through onStart()
+    protected void onStart() {
+        super.onStart();
+
+        //Use 'this' to make sure the listener is not used when needed to avoid over battery usage for user and also save cost
+        userProfileDocRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+           //Mainly for showing the profile pic
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                //Check if document already exists
+                if (documentSnapshot.exists()) {
+                    //Get the imageURL from documentSnapshot
+                    String imageURL = documentSnapshot.getString(PROFILE_PIC_KEY);
+
+                    //Use Glide library for easy image load and display in imageView
+                    Glide.with(ProfileSetupActivity.this).load(imageURL)
+                            .placeholder(R.drawable.profile_icon) //Shown when image is loading
+                            .error(R.drawable.baseline_error_24) //If there is an error in loading image
+                            .into(pProfileImage);
+                }
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,11 +124,20 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
         userProfileDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
 
+        //Get views using R.id
         pUsernameET = findViewById(R.id.profileUsername);
         pBioET = findViewById(R.id.profileStatus);
         pInterestsET = findViewById(R.id.profileInterests);
         pLocationET = findViewById(R.id.profileLocation);
         pProfileSaveBtn = findViewById(R.id.profileSaveBtn);
+        pProfilePicUploadBtn = findViewById(R.id.profilePicUploadBtn);
+        pProfileImage = findViewById(R.id.profileImageView);
+        pProfileUploadPB = findViewById(R.id.profileSaveProgressBar);
+
+        pProfilePicURL = "";
+
+        //Initialise firebase storage bucket
+        pStorageReference = FirebaseStorage.getInstance().getReference("profile_images");
 
         //Set array adapter to use with the pInterestsET to populate from the interestsList
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, interestsList);
@@ -89,11 +151,19 @@ public class ProfileSetupActivity extends AppCompatActivity {
             startActivity(loginIntent);
             finish();
         }
-        //Set OnClickListener for Button
+        //Set OnClickListener for save Button
         pProfileSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveProfile();
+            }
+        });
+
+        //Set OnClickListener for upload button
+        pProfilePicUploadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickProfileImage()
             }
         });
     }
@@ -108,6 +178,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
         String bio = pBioET.getText().toString();
         String interests = pInterestsET.getText().toString();
         String location = pLocationET.getText().toString();
+        String profilePic = pProfilePicURL;
 
         //To validate interest input interest from user
         String[] userInterests = interests.split(",");
@@ -119,24 +190,28 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
         //Validate the inputs first before saving profile
         if(username.isEmpty()){
-            Toast.makeText(ProfileSetupActivity.this, "Please enter a Username", Toast.LENGTH_SHORT);
+            Toast.makeText(ProfileSetupActivity.this, "Please enter a Username",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
         if(location.isEmpty()){
-            Toast.makeText(ProfileSetupActivity.this, "Please enter your Location(City)", Toast.LENGTH_SHORT);
+            Toast.makeText(ProfileSetupActivity.this, "Please enter your Location(City)",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
         if(interests.isEmpty()){
-            Toast.makeText(ProfileSetupActivity.this, "Please enter an interest", Toast.LENGTH_SHORT);
+            Toast.makeText(ProfileSetupActivity.this, "Please enter an interest",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
         //Create hashmap to save the profile data to save to cloud database
         Map<String, Object> dataToSave = new HashMap<String, Object>();
-        dataToSave.put("username", username);
-        dataToSave.put("bio", bio);
-        dataToSave.put("interests", interests);
-        dataToSave.put("location", location);
+        dataToSave.put(PROFILE_PIC_KEY, profilePic);
+        dataToSave.put(USERNAME_KEY, username);
+        dataToSave.put(BIO_KEY, bio);
+        dataToSave.put(INTERESTS_KEY, interests);
+        dataToSave.put(LOCATION_KEY, location);
 
         //Now save to the database using the doc we created at the start
         userProfileDocRef.set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -144,7 +219,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
             public void onSuccess(Void unused) {
                 Log.d("ProfileData", "Document has been saved");
                 Toast.makeText(ProfileSetupActivity.this, "Profile Saved!",
-                        Toast.LENGTH_SHORT);
+                        Toast.LENGTH_SHORT).show();
 
                 //Create an Intent and direct user back to their profile page after
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -158,11 +233,55 @@ public class ProfileSetupActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "Unable to save Profile", e);
                 Toast.makeText(ProfileSetupActivity.this, "Could Not Save Profile!",
-                        Toast.LENGTH_SHORT);
+                        Toast.LENGTH_SHORT).show();
 
             }
         });
     }
+
+    //Method to launch the image chooser for user to pick profile image
+    private void pickProfileImage() {
+        //Initialise an intent object
+        Intent intent = new Intent();
+        intent.setType("image/");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    //Method to upload image to firebase storage using the image Uri
+    private void uploadProfilePic(Uri imagePath){
+        //If image picked
+        if (imagePath == null){
+            //Show progress bar
+            pProfileUploadPB.setVisibility(View.VISIBLE);
+
+            //Defining the child of storageRef (the image saved under current user)
+            StorageReference ref = pStorageReference.child(currentUser.getUid() + ".jpg");
+
+            //Add to storage and give a Toast message to user if upload was a success
+            ref.putFile(imagePath).addOnSuccessListener(taskSnapshot -> {
+                //Stop showing progress bar
+                pProfileUploadPB.setVisibility(View.GONE);
+
+                //Give toast message
+                Toast.makeText(ProfileSetupActivity.this, "Profile Image uploaded Successfully",
+                        Toast.LENGTH_SHORT).show();
+
+                //Get the URL of the uploaded image to save to firestore with other user data
+                ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String imageURL = uri.toString();
+                    pProfilePicURL = imageURL;
+                });
+
+            }).addOnFailureListener(e -> {
+                pProfileUploadPB.setVisibility(View.GONE);
+                Toast.makeText(ProfileSetupActivity.this, "Failed to Upload Profile Image!",
+                        Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+
+
 }
 
 

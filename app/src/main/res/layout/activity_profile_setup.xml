@@ -8,10 +8,31 @@
     tools:context=".ProfileSetupActivity">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="145dp"
+        android:id="@+id/profileImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/black_girl_prof" />
+        android:src="@drawable/profile_icon"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/profilePicUploadBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="Upload Profile Image"
+        android:textSize="20sp"/>
+
+    <!--Progress Bar to show user if info if successfully saved -->
+    <ProgressBar
+        android:id="@+id/profileSaveProgressBar"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/profileUsername"
@@ -58,6 +79,7 @@
             android:textSize="20sp"
             android:text="Save"
             android:layout_marginTop="5dp"/>
+
 
     </LinearLayout>
 
