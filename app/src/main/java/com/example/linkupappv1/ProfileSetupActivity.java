@@ -7,8 +7,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -32,8 +34,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Class To Setup Profile for firstTime Users
@@ -67,6 +72,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
     //URL string for profile image after uploading to storage to save in firestore
     String pProfilePicURL;
+    Uri pFirestorePicURI;
 
     //Using Firebase storage for uploading image to storage for User profiles
     private StorageReference pStorageReference;
@@ -133,8 +139,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
         pProfilePicUploadBtn = findViewById(R.id.profilePicUploadBtn);
         pProfileImage = findViewById(R.id.profileImageView);
         pProfileUploadPB = findViewById(R.id.profileSaveProgressBar);
-
-        pProfilePicURL = "";
+        //pProfilePicURL = "";
 
         //Initialise firebase storage bucket
         pStorageReference = FirebaseStorage.getInstance().getReference("profile_images");
@@ -163,7 +168,15 @@ public class ProfileSetupActivity extends AppCompatActivity {
         pProfilePicUploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pickProfileImage()
+                uploadProfilePic(pFirestorePicURI);
+            }
+        });
+
+        //Set onClickListener on ImageView
+        pProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickProfileImage();
             }
         });
     }
@@ -248,15 +261,52 @@ public class ProfileSetupActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    //Override onActivityResult and get the selected image URL
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //Check if image was successfully picked
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
+            //Get the picked image URI
+            System.out.println("DEBUG In onActivity Image URI = " + data.getData());
+            Uri imageURI = data.getData();
+
+            //Save to a variable in case to access later to save in FireStore under user profile
+            pFirestorePicURI = imageURI;
+
+            //Use try catch block
+            try {
+                //Setting the image bitmap on imageView for user to see
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageURI);
+                pProfileImage.setImageBitmap(bitmap);
+
+                //Calling the uploadProfilePic Method using the URI to save to firebase storage
+                //uploadProfilePic(imageURI);
+
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
     //Method to upload image to firebase storage using the image Uri
     private void uploadProfilePic(Uri imagePath){
         //If image picked
-        if (imagePath == null){
+        if (imagePath != null){
+            System.out.println("DEBUG Uploading Image to Firebase");
             //Show progress bar
             pProfileUploadPB.setVisibility(View.VISIBLE);
 
             //Defining the child of storageRef (the image saved under current user)
             StorageReference ref = pStorageReference.child(currentUser.getUid() + ".jpg");
+
+           //String path = "profile_images/" + UUID.randomUUID() + ".jpg";
+            //StorageReference ref = pStorageReference.child(path);
 
             //Add to storage and give a Toast message to user if upload was a success
             ref.putFile(imagePath).addOnSuccessListener(taskSnapshot -> {
