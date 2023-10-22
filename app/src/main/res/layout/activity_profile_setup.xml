@@ -16,13 +16,18 @@
         android:textStyle="bold"
         android:textColor="#000000"/>
 
-    <ImageView
+    <!--Using shapeableImageView to help apply a circular mask to image-->
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profileImageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/profile_icon"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        android:elevation="5dp"
+        app:circularImage="true"
+        app:shapeAppearanceOverlay="@style/CircularImageView"/>
 
     <Button
         android:id="@+id/profilePicUploadBtn"

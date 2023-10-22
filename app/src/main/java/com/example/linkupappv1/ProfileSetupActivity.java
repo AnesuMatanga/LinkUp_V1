@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -67,7 +68,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
     //1 for yes for request to pick an image
     private static final int PICK_IMAGE_REQUEST = 1;
-    ImageView pProfileImage;
+    ShapeableImageView pProfileImage;
     ProgressBar pProfileUploadPB;
 
     //URL string for profile image after uploading to storage to save in firestore

@@ -35,7 +35,7 @@ android {
 dependencies {
 
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.7.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.firebase:firebase-auth:22.2.0")
     implementation("com.google.firebase:firebase-firestore:24.9.0")
@@ -49,6 +49,9 @@ dependencies {
 
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+
+    //Using android Materials Components library to help with a modern feel for the app(circular profile images)
+    implementation("com.google.android.material:material:1.10.0")
 
 
     // TODO: Add the dependencies for Firebase products you want to use
