@@ -34,7 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     //Create view objects
     TextView pRequestsCountTV, pLinkUpsCountTV, pRequestsTV, pLinkUpsTV,
-            pProfUsername, pProfBio, pProfLocation;
+            pProfUsername, pProfBio, pProfLocation, pProfInterests;
     ImageView pProfilePicIV;
     Uri pProfPicURI;
 
@@ -76,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
                     pProfUsername.setText("@" + username);
                     pProfBio.setText(bio);
                     pProfLocation.setText(location);
+                    pProfInterests.setText("[ " + interests + " ]");
 
                     //Get profile image and show it on Profile page in real Time using Glide Library
                     Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
@@ -100,7 +101,7 @@ public class ProfileActivity extends AppCompatActivity {
         pProfLocation = findViewById(R.id.profLocation);
         pProfUsername = findViewById(R.id.profUsername);
         pProfilePicIV = findViewById(R.id.profileImageView);
-
+        pProfInterests = findViewById(R.id.profInterests);
         //Create onSetListeners for the TextViews so when a user clicks they can view their requests
         pLinkUpsTV.setOnClickListener(new View.OnClickListener() {
             @Override
