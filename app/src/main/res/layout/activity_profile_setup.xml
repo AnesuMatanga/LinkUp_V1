@@ -26,7 +26,6 @@
         android:layout_gravity="center"
         android:scaleType="centerCrop"
         android:elevation="5dp"
-        app:circularImage="true"
         app:shapeAppearanceOverlay="@style/CircularImageView"/>
 
     <Button
