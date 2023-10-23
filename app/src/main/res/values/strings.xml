@@ -8,4 +8,7 @@
     <string name="register">Register</string>
     <string name="clickToLogin">Ready To Login</string>
     <string name="notRegisteredYet">Not Registered Yet</string>
+    <string name="quests">Quests</string>
+    <string name="linkUps">LinkUps</string>
+    <string name="upTos">upTos</string>
 </resources>
