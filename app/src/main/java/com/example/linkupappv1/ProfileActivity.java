@@ -1,17 +1,24 @@
 package com.example.linkupappv1;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -37,6 +44,10 @@ public class ProfileActivity extends AppCompatActivity {
             pProfUsername, pProfBio, pProfLocation, pProfInterests;
     ImageView pProfilePicIV;
     Uri pProfPicURI;
+
+    //ViewPager and Tab view objects
+    ViewPager2 pViewPager2;
+    TabLayout pTabLayout;
 
     //For current User
     FirebaseAuth pAuth;
@@ -130,6 +141,85 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+
+        //Initialize ViewPager2 to sort the tabs functionality and use adapter
+        pViewPager2 = findViewById(R.id.profViewPager);
+        pTabLayout = findViewById(R.id.profileTabLayout);
+
+        //Set ProfViewPagerAdapter
+        pViewPager2.setAdapter(new ProfViewPagerAdapter(getSupportFragmentManager(), getLifecycle()));
+
+        new TabLayoutMediator(pTabLayout,pViewPager2, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    //Set tab text and icon
+                    tab.setText(R.string.quests);
+                    tab.setIcon(R.drawable.icons_compass_64);
+                    break;
+                case 1:
+                    tab.setText(R.string.linkUps);
+                    tab.setIcon(R.drawable.icons_chain_50);
+                    break;
+                case 2:
+                    tab.setText(R.string.upTos);
+                    tab.setIcon(R.drawable.icons_arrow_up_50);
+                    break;
+            }
+        }).attach();
+    }
+
+    //Quests Tab Fragment inner class
+    public static class QuestFragment extends Fragment {
+        //Fragment Usage
+
+        //Constructor as default constructor is needed for Fragments
+        public QuestFragment() {
+            //It can be empty
+        }
+
+        //Override onCreateView for inflating fragment
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            //Inflate the Fragment using the specified .xml layout
+            return inflater.inflate(R.layout.fragment_quest, container, false);
+        }
+    }
+
+    //LinkUps Tab Fragment inner class (Also avoiding a lot of external classes)
+    public static class LinkUpsFragment extends Fragment {
+        //Fragment Usage
+
+        //Constructor as default constructor is needed for Fragments
+        public LinkUpsFragment() {
+            //It can be empty
+        }
+
+        //Override onCreateView for inflating fragment
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            //Inflate the Fragment using the specified .xml layout
+            return inflater.inflate(R.layout.fragment_quest, container, false);
+        }
+    }
+
+    //Quests Tab Fragment inner class
+    public static class UpTosFragment extends Fragment {
+        //Fragment Usage
+
+        //Constructor as default constructor is needed for Fragments
+        public UpTosFragment() {
+            //It can be empty
+        }
+
+        //Override onCreateView for inflating fragment
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            //Inflate the Fragment using the specified .xml layout
+            return inflater.inflate(R.layout.fragment_quest, container, false);
+        }
     }
 
 
