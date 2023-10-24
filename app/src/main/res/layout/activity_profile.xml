@@ -182,16 +182,31 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="2">
 
                 <Button
-                    android:layout_width="match_parent"
+                    android:id="@+id/profEditProfileBtn"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:padding="5dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginLeft="60dp"
-                    android:layout_marginRight="60dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:text="Edit Profile"
+                    android:textSize="20sp"/>
+
+                <Button
+                    android:id="@+id/profPostBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="Post"
                     android:textSize="20sp"/>
 
             </LinearLayout>

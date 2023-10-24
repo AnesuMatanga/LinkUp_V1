@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,10 +14,12 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,9 +42,14 @@ public class ProfileActivity extends AppCompatActivity {
     public static final String PROFILE_PIC = "profile_pic";
     public static final String PROFILE_LOCATION = "location";
 
+    //Dialog Post menu items (Quests and UpTo) Things a user can post
+    String[] postOptions = {"Quest", "UpTo"};
+
     //Create view objects
     TextView pRequestsCountTV, pLinkUpsCountTV, pRequestsTV, pLinkUpsTV,
             pProfUsername, pProfBio, pProfLocation, pProfInterests;
+
+    Button pPostButton, pEditProfileButton;
     ImageView pProfilePicIV;
     Uri pProfPicURI;
 
@@ -113,6 +121,8 @@ public class ProfileActivity extends AppCompatActivity {
         pProfUsername = findViewById(R.id.profUsername);
         pProfilePicIV = findViewById(R.id.profileImageView);
         pProfInterests = findViewById(R.id.profInterests);
+        pPostButton = findViewById(R.id.profPostBtn);
+        pEditProfileButton = findViewById(R.id.profEditProfileBtn);
         //Create onSetListeners for the TextViews so when a user clicks they can view their requests
         pLinkUpsTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,6 +149,14 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+            }
+        });
+
+        //If User presses the Post button on their profile a dialog should appear with options
+        pPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickWhatToPost();
             }
         });
 
@@ -220,6 +238,32 @@ public class ProfileActivity extends AppCompatActivity {
             //Inflate the Fragment using the specified .xml layout
             return inflater.inflate(R.layout.fragment_quest, container, false);
         }
+    }
+
+    //Fragments for Quest and UpTo after post btn and choice has been clicked by user for them to post
+   
+
+    //Method using Material library to create a simple dialog that pops when user clicks post with options
+    public void pickWhatToPost() {
+
+        new MaterialAlertDialogBuilder(ProfileActivity.this) //Profile activity context
+                .setTitle(getResources().getString(R.string.post)) //set title post from resources string.xml file
+                .setItems(postOptions, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int option) {
+
+                        //Using switch case for the different options(items) a user can choose to post
+                        switch (option) {
+                            case 0: //Quest
+                                //If user clicks Quest, what next?
+                                break;
+                            case 1: //UpTo
+                                //If user clicks UpTo, what next?
+                                break;
+                        }
+
+                    }
+                }).show();  //Finally show the dialog
     }
 
 
