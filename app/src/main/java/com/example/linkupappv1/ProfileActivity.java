@@ -204,7 +204,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    //LinkUps Tab Fragment inner class (Also avoiding a lot of external classes)
+    //LinkUps Tab Fragment inner class (Also avoiding a lot of external classes) better for me to use Fragments
     public static class LinkUpsFragment extends Fragment {
         //Fragment Usage
 
@@ -241,7 +241,27 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     //Fragments for Quest and UpTo after post btn and choice has been clicked by user for them to post
-   
+    public static class PostQuestFragment extends Fragment {
+        public PostQuestFragment() {
+            //It can be empty
+        }
+
+        //Override onCreateView for inflating fragment
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            //Inflate the Fragment using the specified .xml layout
+            return inflater.inflate(R.layout.fragment_quest, container, false);
+        }
+
+    }
+
+    public static class PostUpToFragment extends Fragment {
+        //Constructor as default constructor is needed for Fragments
+        public PostUpToFragment() {
+            //It can be empty
+        }
+    }
 
     //Method using Material library to create a simple dialog that pops when user clicks post with options
     public void pickWhatToPost() {

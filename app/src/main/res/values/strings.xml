@@ -14,4 +14,10 @@
     <string name="image">Black Girl Image</string>
     <string name="keenButton">Keen</string>
     <string name="post">Post</string>
+    <string name="questTitle">Quest Title</string>
+    <string name="questTitleHelperText">(e.g 20th Birthday Party)</string>
+    <string name="questCaptionHelperText">(e.g Yay, Happy to turn 20!)</string>
+    <string name="questCaption">Caption</string>
+    <string name="questDate">Date of Quest</string>
+    <string name="questDateHelperText">Tap to pick Quest Date</string>
 </resources>
