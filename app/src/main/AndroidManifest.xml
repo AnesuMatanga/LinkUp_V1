@@ -3,14 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- User Permission for internet use -->
     <uses-permission android:name="android.permission.INTERNET" />
-
     <!--
     Allows Glide to monitor connectivity status and restart failed requests if users go from a
     a disconnected to a connected network state.
     -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-    <!--To load images from local folders like DCIM or Pictures, need to add the READ_EXTERNAL_STORAGE permission -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- To load images from local folders like DCIM or Pictures, need to add the READ_EXTERNAL_STORAGE permission -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -23,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LinkUpAppV1"
         tools:targetApi="31">
+        <activity
+            android:name=".HomePageActivity"
+            android:exported="false" />
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />

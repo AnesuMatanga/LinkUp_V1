@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--Using Material library for the bottom nav menu-->
+    <item
+        android:id="@+id/homePage"
+        android:enabled="true"
+        android:icon="@drawable/baseline_home_24"
+        android:title="@string/home_icon"/>
+
+    <item
+        android:id="@+id/linkupPage"
+        android:enabled="true"
+        android:icon="@drawable/icons_chain_50"
+        android:title="@string/chat_icon"/>
+
+    <item
+        android:id="@+id/profilePage"
+        android:enabled="true"
+        android:icon="@drawable/icons_test_account_60"
+        android:title="@string/profile_icon"/>
+
+    <item
+        android:id="@+id/settingsPage"
+        android:enabled="true"
+        android:icon="@drawable/baseline_settings_24"
+        android:title="@string/settings_icon"/>
+
+</menu>

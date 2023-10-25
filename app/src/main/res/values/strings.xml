@@ -8,4 +8,8 @@
     <string name="register">Register</string>
     <string name="clickToLogin">Ready To Login</string>
     <string name="notRegisteredYet">Not Registered Yet</string>
+    <string name="home_icon">Home</string>
+    <string name="chat_icon">LinkUp</string>
+    <string name="profile_icon">Profile</string>
+    <string name="settings_icon">Settings</string>
 </resources>
