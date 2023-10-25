@@ -4,11 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomePageActivity extends AppCompatActivity {
+
+    Handler uiHandler;
 
     //Initialize Bottom NavBar
     BottomNavigationView bottomNavigationView;
@@ -22,6 +26,8 @@ public class HomePageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        uiHandler = new Handler(Looper.getMainLooper());
 
         //Initialise views
         bottomNavigationView = findViewById(R.id.bottomNavigation);
@@ -44,6 +50,8 @@ public class HomePageActivity extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.profilePage){
                     //What happens after someone selects profilePage item
+                    //Update user profile data from firestore
+                    profileFragment.updateData();
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, profileFragment).commit();
                     return true;
                 } else if (item.getItemId() == R.id.settingsPage){

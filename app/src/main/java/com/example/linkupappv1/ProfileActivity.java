@@ -57,7 +57,7 @@ public class ProfileActivity extends AppCompatActivity {
     private DocumentReference pDocRef;
 
     //Real Time data retrieval to keep profile page always updated using onStart()
-    protected void onStart() {
+  /*  protected void onStart() {
         super.onStart();
         System.out.println("****IN ON START()***");
 
@@ -95,7 +95,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-    }
+    } */
 
 
     @Override
@@ -113,7 +113,7 @@ public class ProfileActivity extends AppCompatActivity {
         pProfUsername = findViewById(R.id.profUsername);
         pProfilePicIV = findViewById(R.id.profileImageView);
         pProfInterests = findViewById(R.id.profInterests);
-        bottomNavigationView = findViewById(R.id.bottomNavigation);
+        //bottomNavigationView = findViewById(R.id.bottomNavigation);
 
         //Get Menu ids to use in the onNavigationItemSelected listener
 
