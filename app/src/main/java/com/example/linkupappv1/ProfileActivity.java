@@ -147,7 +147,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         //Set onNavigationItemSelectedListener for bottom navigation created using Material Library
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+      /*  bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -168,7 +168,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
     }
 }
 
