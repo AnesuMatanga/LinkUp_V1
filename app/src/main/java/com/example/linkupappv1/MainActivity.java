@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 //Firebase.analytics.logEvent("linkUp clicked", null);
 
                 //Intent to move to the desired activity
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                Intent intent = new Intent(MainActivity.this, HomePageActivity.class);
                 startActivity(intent);
 
             }

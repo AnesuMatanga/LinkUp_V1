@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -113,7 +114,6 @@ public class ProfileActivity extends AppCompatActivity {
         pProfUsername = findViewById(R.id.profUsername);
         pProfilePicIV = findViewById(R.id.profileImageView);
         pProfInterests = findViewById(R.id.profInterests);
-        bottomNavigationView = findViewById(R.id.bottomNavigation);
 
         //Get Menu ids to use in the onNavigationItemSelected listener
 
@@ -143,30 +143,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-            }
-        });
-
-        //Set onNavigationItemSelectedListener for bottom navigation created using Material Library
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                //Using if - else to set different navigation item functionalities
-                if (item.getItemId() == R.id.homePage){
-                    //What happens after someone selects homePage item
-                    return true;
-                } else if (item.getItemId() == R.id.linkupPage){
-                    //What happens after someone selects linkUpPage item
-                    return true;
-                } else if (item.getItemId() == R.id.profilePage){
-                    //What happens after someone selects profilePage item
-                    return true;
-                } else if (item.getItemId() == R.id.settingsPage){
-                    //What happens after someone selects settingsPage item
-                    return true;
-                }
-                return false;
             }
         });
     }
