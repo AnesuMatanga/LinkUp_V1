@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -115,7 +116,8 @@ public class ProfileActivity extends AppCompatActivity {
         pProfInterests = findViewById(R.id.profInterests);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
 
-        //Get Menu ids to use in the onNavigationItemSelected listener
+        //Set Home Selected listener
+        bottomNavigationView.setSelectedItemId(R.id.profilePage);
 
         //Create onSetListeners for the TextViews so when a user clicks they can view their requests
         pLinkUpsTV.setOnClickListener(new View.OnClickListener() {
@@ -155,9 +157,13 @@ public class ProfileActivity extends AppCompatActivity {
                 //Using if - else to set different navigation item functionalities
                 if (item.getItemId() == R.id.homePage){
                     //What happens after someone selects homePage item
+                    startActivity(new Intent(getApplicationContext(), FindFriendActivity.class));
+                    overridePendingTransition(0, 0);
                     return true;
                 } else if (item.getItemId() == R.id.linkupPage){
                     //What happens after someone selects linkUpPage item
+                    startActivity(new Intent(getApplicationContext(), LinkUpActivity.class));
+                    overridePendingTransition(0, 0);
                     return true;
                 } else if (item.getItemId() == R.id.profilePage){
                     //What happens after someone selects profilePage item

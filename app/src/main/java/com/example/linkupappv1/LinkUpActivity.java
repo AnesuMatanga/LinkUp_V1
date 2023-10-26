@@ -6,8 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.Firebase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -83,6 +86,12 @@ public class LinkUpActivity extends AppCompatActivity {
 
         lQuoteFetched = findViewById(R.id.fetchedQuote);
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+        //Set Home Selected listener
+        bottomNavigationView.setSelectedItemId(R.id.linkupPage);
+
+
         lSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,6 +103,33 @@ public class LinkUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 fetchQuote();
+            }
+        });
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                //Using if - else to set different navigation item functionalities
+                if (item.getItemId() == R.id.homePage){
+                    //What happens after someone selects homePage item
+                    startActivity(new Intent(getApplicationContext(), FindFriendActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (item.getItemId() == R.id.linkupPage){
+                    //What happens after someone selects linkUpPage item
+                    return true;
+                } else if (item.getItemId() == R.id.profilePage){
+                    //What happens after someone selects profilePage item
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (item.getItemId() == R.id.settingsPage){
+                    //What happens after someone selects settingsPage item
+                    return true;
+                }
+                return false;
             }
         });
 
