@@ -113,7 +113,7 @@ public class ProfileActivity extends AppCompatActivity {
         pProfUsername = findViewById(R.id.profUsername);
         pProfilePicIV = findViewById(R.id.profileImageView);
         pProfInterests = findViewById(R.id.profInterests);
-        bottomNavigationView = findViewById(R.id.bottomNavigation);
+        //bottomNavigationView = findViewById(R.id.bottomNavigation);
 
         //Get Menu ids to use in the onNavigationItemSelected listener
 
