@@ -30,6 +30,15 @@ import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    //Query the database only the first time a user accesses app to avoid unnecessary querying using a Flag
+    public static boolean hasQueriedFirestore = false;
+    // Declare variables to hold strings for views as static to help with the above cause
+    private static String username = "";
+    private static String bio = "";
+    private static String interests = "";
+    private static String location = "";
+    private static String profile_pic = "";
+
     //Constants for keys to help query the Firestore
     public static final String PROFILE_USERNAME = "username";
     public static final String PROFILE_BIO = "bio";
@@ -62,39 +71,51 @@ public class ProfileActivity extends AppCompatActivity {
         super.onStart();
         System.out.println("****IN ON START()***");
 
-        //Get document reference for currently signed in user utilising Firebase libraries
-        pAuth = FirebaseAuth.getInstance();
-        currentUser = pAuth.getCurrentUser();
+        if (!hasQueriedFirestore) {
+            hasQueriedFirestore = true;
+            //Get document reference for currently signed in user utilising Firebase libraries
+            pAuth = FirebaseAuth.getInstance();
+            currentUser = pAuth.getCurrentUser();
 
-        System.out.println("****Current User*** : " + currentUser);
+            System.out.println("****Current User*** : " + currentUser);
 
-        //Initialize doc ref
-        pDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
+            //Initialize doc ref
+            pDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
 
-        //Use 'this' to make sure the listener is not used when needed to avoid over battery usage for user and also save cost
-        pDocRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
-                //First check if document exists before trying to access it
-                if (documentSnapshot.exists()) {
-                    //Get the document Info and set it in user profile in real time
-                    String username = documentSnapshot.getString(PROFILE_USERNAME);
-                    String bio = documentSnapshot.getString(PROFILE_BIO);
-                    String profile_pic = documentSnapshot.getString(PROFILE_PIC);
-                    String interests = documentSnapshot.getString(PROFILE_INTERESTS);
-                    String location = documentSnapshot.getString(PROFILE_LOCATION);
+            //Use 'this' to make sure the listener is not used when needed to avoid over battery usage for user and also save cost
+            pDocRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                    //First check if document exists before trying to access it
+                    if (documentSnapshot.exists()) {
+                        //Get the document Info and set it in user profile in real time
+                        username = documentSnapshot.getString(PROFILE_USERNAME);
+                        bio = documentSnapshot.getString(PROFILE_BIO);
+                        profile_pic = documentSnapshot.getString(PROFILE_PIC);
+                        interests = documentSnapshot.getString(PROFILE_INTERESTS);
+                        location = documentSnapshot.getString(PROFILE_LOCATION);
 
-                    //Set the username, bio and Location in the TextViews
-                    pProfUsername.setText("@" + username);
-                    pProfBio.setText(bio);
-                    pProfLocation.setText(location);
-                    pProfInterests.setText("[ " + interests + " ]");
+                        //Set the username, bio and Location in the TextViews
+                        pProfUsername.setText("@" + username);
+                        pProfBio.setText(bio);
+                        pProfLocation.setText(location);
+                        pProfInterests.setText("[ " + interests + " ]");
 
-                    //Get profile image and show it on Profile page in real Time using Glide Library
-                    Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
+                        //Get profile image and show it on Profile page in real Time using Glide Library
+                        Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            //Set the username, bio and Location in the TextViews
+            pProfUsername.setText("@" + username);
+            pProfBio.setText(bio);
+            pProfLocation.setText(location);
+            pProfInterests.setText("[ " + interests + " ]");
+
+            //Get profile image and show it on Profile page in real Time using Glide Library
+            Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
+        }
 
     }
 

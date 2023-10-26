@@ -31,13 +31,16 @@ import java.util.Map;
 
 public class LinkUpActivity extends AppCompatActivity {
 
+    //Query the database only the first time a user accesses app to avoid unnecessary querying using a Flag
+    public static boolean hasQueriedFirestore = false;
+
     //Make this constant
     public static final String AUTHOR_KEY = "author";
     public static final String QUOTE_KEY = "quote";
 
     TextView lQuoteFetched;
 
-    private DocumentReference mDocRef = FirebaseFirestore.getInstance().document("sampleData/inspiration");
+    private DocumentReference mDocRef;
 
     //Create Objects
     EditText lUserEmail, lUserName;
@@ -52,25 +55,29 @@ public class LinkUpActivity extends AppCompatActivity {
         //DocumentListenOptions verboseOptions = new DocumentListenOptions();
         //verboseOptions.includeMetadataChanges();
 
-        //Use 'this' to make sure the listener is not used when needed to avoid over battery usage for user and also save cost
-        mDocRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
-                if (documentSnapshot.exists()) {
-                    String quoteText = documentSnapshot.getString(QUOTE_KEY);
-                    String authorText = documentSnapshot.getString(AUTHOR_KEY);
+        if (!hasQueriedFirestore) {
+            hasQueriedFirestore = true;
+            mDocRef = FirebaseFirestore.getInstance().document("sampleData/inspiration");
+            //Use 'this' to make sure the listener is not used when needed to avoid over battery usage for user and also save cost
+            mDocRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                    if (documentSnapshot.exists()) {
+                        String quoteText = documentSnapshot.getString(QUOTE_KEY);
+                        String authorText = documentSnapshot.getString(AUTHOR_KEY);
 
-                    //Set the text Value into the textView
-                    lQuoteFetched.setText("\"" + quoteText + "\" -- " + authorText);
+                        //Set the text Value into the textView
+                        lQuoteFetched.setText("\"" + quoteText + "\" -- " + authorText);
 
-                    Toast.makeText(LinkUpActivity.this, "Updated Quote From Cloud!",
-                            Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LinkUpActivity.this, "Updated Quote From Cloud!",
+                                Toast.LENGTH_SHORT).show();
 
-                } else if (error != null){
-                    Log.w(TAG, "Got an exception!", error);
+                    } else if (error != null) {
+                        Log.w(TAG, "Got an exception!", error);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 
