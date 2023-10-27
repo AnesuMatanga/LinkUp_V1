@@ -1,12 +1,16 @@
 package com.example.linkupappv1;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,133 +25,61 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FindFriendActivity extends AppCompatActivity {
 
-    //Query the database only the first time a user accesses app to avoid unnecessary querying using a Flag
-    public static boolean hasQueriedFirestore = false;
-
-    //Constants for keys to help query the Firestore
-    public static final String PROFILE_USERNAME = "username";
-    public static final String PROFILE_BIO = "bio";
-    public static final String PROFILE_INTERESTS = "interests";
-    public static final String PROFILE_PIC = "profile_pic";
-    public static final String PROFILE_LOCATION = "location";
-
-    //Create view objects
-    TextView pRequestsCountTV, pLinkUpsCountTV, pRequestsTV, pLinkUpsTV,
-            pProfUsername, pProfBio, pProfLocation, pProfInterests;
-    //For menu ids
-    final int homePage = R.id.homePage;
-    final int linkUpPage = R.id.linkupPage;
-    final int profilePage = R.id.profilePage;
-    final int settingsPage = R.id.settingsPage;
+    //Declare viewPager2 (Used viewPager2 for its numerous benefits with helping make this
+    //page(activity) interactive and provide good user interface
+    private ViewPager2 viewPager;
+    //Initialise Firestore database
 
     BottomNavigationView bottomNavigationView;
-    ImageView pProfilePicIV;
-    Uri pProfPicURI;
+    FirebaseFirestore db;
 
-    //For current User
-    FirebaseAuth pAuth;
+    FirebaseAuth auth;
     FirebaseUser currentUser;
-
-    //Firebase Document Reference
-    private DocumentReference pDocRef;
-
-    //Real Time data retrieval to keep profile page always updated using onStart()
-    protected void onStart() {
-        super.onStart();
-        System.out.println("****IN ON START()***");
-
-        if (!hasQueriedFirestore) {
-            hasQueriedFirestore = true;
-            //Get document reference for currently signed in user utilising Firebase libraries
-            pAuth = FirebaseAuth.getInstance();
-            currentUser = pAuth.getCurrentUser();
-
-            System.out.println("****Current User*** : " + currentUser);
-
-            //Initialize doc ref
-            pDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
-
-            //Use 'this' to make sure the listener is not used when needed to avoid over battery usage for user and also save cost
-            pDocRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
-                    //First check if document exists before trying to access it
-                    if (documentSnapshot.exists()) {
-                        //Get the document Info and set it in user profile in real time
-                        String username = documentSnapshot.getString(PROFILE_USERNAME);
-                        String bio = documentSnapshot.getString(PROFILE_BIO);
-                        String profile_pic = documentSnapshot.getString(PROFILE_PIC);
-                        String interests = documentSnapshot.getString(PROFILE_INTERESTS);
-                        String location = documentSnapshot.getString(PROFILE_LOCATION);
-
-                        //Set the username, bio and Location in the TextViews
-                        pProfUsername.setText("@" + username);
-                        pProfBio.setText(bio);
-                        pProfLocation.setText(location);
-                        pProfInterests.setText("[ " + interests + " ]");
-
-                        //Get profile image and show it on Profile page in real Time using Glide Library
-                        Glide.with(FindFriendActivity.this).load(profile_pic).into(pProfilePicIV);
-                    }
-                }
-            });
-        }
-
-    }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_friend);
 
-        //Initialize the view objects using R.id
-        pRequestsCountTV = findViewById(R.id.profRequestsCount);
-        pLinkUpsCountTV = findViewById(R.id.profLinkupsCount);
-        pLinkUpsTV = findViewById(R.id.linkUpsText);
-        pRequestsTV = findViewById(R.id.requestsText);
-        pProfBio = findViewById(R.id.profBio);
-        pProfLocation = findViewById(R.id.profLocation);
-        pProfUsername = findViewById(R.id.profUsername);
-        pProfilePicIV = findViewById(R.id.profileImageView);
-        pProfInterests = findViewById(R.id.profInterests);
+        //Initialize views
+        viewPager = findViewById(R.id.viewPager);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
 
-        //Set Home Selected listener
-        bottomNavigationView.setSelectedItemId(R.id.homePage);
+        //Get currentUser to put in the adapter constructor
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
 
-        //Create onSetListeners for the TextViews so when a user clicks they can view their requests
-        pLinkUpsTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        db = FirebaseFirestore.getInstance();
+        //Fetch friend recommendations from firestore and set the adapter
+        db.collection("friendRecommendations").get()
+                .addOnCompleteListener(task -> {
+                    //Check if task is successful
+                    if(task.isSuccessful()) {
+                        //Initialise new List of friendRecommendations
+                        List<FriendRecommendation> friendRecommendationList = new ArrayList<>();
+                        //Loop through data and add to List
+                        for (QueryDocumentSnapshot doc :task.getResult()){
+                            //Create a FriendReco instance and get data from firestore
+                            FriendRecommendation friendRecommendation = doc.toObject(FriendRecommendation.class);
+                            //Add to list
+                            friendRecommendationList.add(friendRecommendation);
+                        }
 
-            }
-        });
-
-        pRequestsTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        pRequestsCountTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        pLinkUpsCountTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+                        //Set the adapter instance and put the list and currentUser
+                        FriendRecommendationAdapter friendRecommendationAdapter = new FriendRecommendationAdapter(friendRecommendationList, currentUser);
+                        viewPager.setAdapter(friendRecommendationAdapter);
+                    } else {
+                        //Error
+                        Log.w(TAG, "Error fetching FriendRecommendations from Firestore");
+                    }
+                });
 
         //Set onNavigationItemSelectedListener for bottom navigation created using Material Library
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -177,4 +109,22 @@ public class FindFriendActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

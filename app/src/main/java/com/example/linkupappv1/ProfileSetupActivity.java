@@ -63,6 +63,9 @@ public class ProfileSetupActivity extends AppCompatActivity {
     //Declare the document to store userData as Firestore cloud saves in docs
     private DocumentReference userProfileDocRef;
 
+    //When user registers, add them to a friendRecommendations doc already to help later with
+    //recommending friends in FindFriendActivity
+    private DocumentReference friendRecommendations;
     EditText pUsernameET, pBioET, pLocationET;
     Button pProfileSaveBtn, pProfilePicUploadBtn;
 
@@ -130,6 +133,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
 
         userProfileDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
+        friendRecommendations = FirebaseFirestore.getInstance().document("friendRecommendations/" + currentUser.getUid());
 
         //Get views using R.id
         pUsernameET = findViewById(R.id.profileUsername);
@@ -235,6 +239,23 @@ public class ProfileSetupActivity extends AppCompatActivity {
                 Toast.makeText(ProfileSetupActivity.this, "Profile Saved!",
                         Toast.LENGTH_SHORT).show();
 
+                //Now save to the database friendRecommendations Doc using the doc we created at the start
+                friendRecommendations.set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("ProfileData", "Document has been saved");
+                        //Toast.makeText(ProfileSetupActivity.this, "Profile Saved!",
+                        //Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Unable to save Profile", e);
+                        Toast.makeText(ProfileSetupActivity.this, "Could Not Save into FriendRecommendations!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 //Create an Intent and direct user back to their profile page after
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                 startActivity(intent);
@@ -251,6 +272,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     //Method to launch the image chooser for user to pick profile image
