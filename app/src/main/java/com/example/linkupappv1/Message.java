@@ -9,7 +9,7 @@ import kotlin.time.TimeSource;
  */
 public class Message {
     public String senderID;
-    public String content;
+    public String messageContent;
 
     //TimeStamp for when message was sent
     public Timestamp timestamp;
@@ -17,5 +17,14 @@ public class Message {
     //Empty Constructor
     public Message() {
 
+    }
+
+    //Getters & setters
+    public String getMessageContent(){
+        return this.messageContent;
+    }
+
+    public String getSenderID(){
+        return this.senderID;
     }
 }

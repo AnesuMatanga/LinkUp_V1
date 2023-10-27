@@ -55,6 +55,9 @@ public class ProfileActivity extends AppCompatActivity {
     final int profilePage = R.id.profilePage;
     final int settingsPage = R.id.settingsPage;
 
+    //From FriendRecommendationAdapter, for intent extras
+    String recomUserId;
+
     BottomNavigationView bottomNavigationView;
     ImageView pProfilePicIV;
     Uri pProfPicURI;
@@ -71,11 +74,15 @@ public class ProfileActivity extends AppCompatActivity {
         super.onStart();
         System.out.println("****IN ON START()***");
 
+        //Get document reference for currently signed in user utilising Firebase libraries
+        pAuth = FirebaseAuth.getInstance();
+        currentUser = pAuth.getCurrentUser();
+
+        //Check if its a currentUser Checking out their own profile
+        //if (recomUserId == currentUser.getUid()) {
         if (!hasQueriedFirestore) {
             hasQueriedFirestore = true;
-            //Get document reference for currently signed in user utilising Firebase libraries
-            pAuth = FirebaseAuth.getInstance();
-            currentUser = pAuth.getCurrentUser();
+
 
             System.out.println("****Current User*** : " + currentUser);
 
@@ -139,6 +146,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         //Set Home Selected listener
         bottomNavigationView.setSelectedItemId(R.id.profilePage);
+
+        //Get recipientUserId(User the message is being sent to) sent through intent as extra to create unique chatId for users
+        recomUserId = getIntent().getStringExtra("recomUserId");
 
         //Create onSetListeners for the TextViews so when a user clicks they can view their requests
         pLinkUpsTV.setOnClickListener(new View.OnClickListener() {

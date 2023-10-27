@@ -1,7 +1,9 @@
 package com.example.linkupappv1;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+import static androidx.core.content.ContextCompat.startActivity;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +17,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +46,10 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
     FirebaseUser currentUser;
     //Document containing currentUser Details
     private DocumentReference fDocRef;
+
+    //Instantiate DB
+    FirebaseFirestore db;
+    CollectionReference usersRef;
 
     private DocumentReference friendRequestsDoc;
     //Constructor that gets the list and also current user
@@ -74,6 +84,47 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
         //Initialize variables to hold data
         String friendUsername;
         friendUsername = friendRecommendations.get(position).username;
+        final String[] recomUserID = new String[1];
+
+        //Set onClickListener for when Know Me Button is clicked to direct people to profile
+        holder.recomKnowMeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Get the UID of the recommended User from firestore
+                db = FirebaseFirestore.getInstance();
+                usersRef = db.collection("users");
+
+                //Now search for the username, also using limit(1) to make sure only one doc is returned
+                usersRef.whereEqualTo("username", friendUsername).limit(1).get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    //If doc has been found
+                                    if (!task.getResult().isEmpty()){
+                                        DocumentSnapshot userDocument = task.getResult().getDocuments().get(0);
+                                        String userId = userDocument.getId();
+                                        recomUserID[0] = userId;
+                                    } else {
+                                        //No doc found with username
+                                        Log.d("FriendRecomAdapter", "No user found with that username");
+                                        //Toast for debugging purposes
+                                        Toast.makeText(holder.itemView.getContext(), "No user found with that username!",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Log.e("FriendRecomAdapter", "Task was unsuccessful");
+                                }
+                            }
+                        });
+
+                //Direct to profile of clicked user
+                Intent intent = new Intent(holder.itemView.getContext(), ProfileActivity.class);
+                //Put Extra to sent to activity
+                intent.putExtra("recomUserId", recomUserID[0]);
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
 
         //Set onClickListener for when LinkUp Button is clicked
         holder.recomLinkUpBtn.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +184,7 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
         //Initializing views
         TextView recomUsername, recomLocation, recomSimilarity;
         ImageView  recomProfilePic;
-        Button recomLinkUpBtn;
+        Button recomLinkUpBtn, recomKnowMeBtn;
 
         //Constructor to do the view lookups to find each subview
         public ViewHolder(@NonNull View itemView) {
@@ -146,6 +197,7 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
             recomSimilarity = itemView.findViewById(R.id.recomSimilarity);
             recomProfilePic = itemView.findViewById(R.id.recomProfilePic);
             recomLinkUpBtn = itemView.findViewById(R.id.recomLinkUpBtn);
+            recomKnowMeBtn = itemView.findViewById(R.id.recomViewBtn);
         }
 
     }
