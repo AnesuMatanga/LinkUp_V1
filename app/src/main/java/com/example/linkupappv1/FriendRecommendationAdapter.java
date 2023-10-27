@@ -80,7 +80,7 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
             @Override
             public void onClick(View view) {
                 //Set friendRequestDoc
-                friendRequestsDoc = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid() + "/friendRequests" + friendUsername);
+                friendRequestsDoc = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid() + "/friendRequests/" + friendUsername);
                 //Get user document from firestore containing Current username
                 final String[] currentUsername = new String[1];
                 fDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
