@@ -6,83 +6,90 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--Using material library-->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <!--Using material library-->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:elevation="30dp"
+            android:layout_margin="8dp">
 
-            <TextView
-                android:id="@+id/recomUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Username"
-                android:textAppearance="?attr/textAppearanceHeadline6"
-                android:layout_gravity="center"/>
-
-            <!--Profile Image view-->
-            <ImageView
-                android:id="@+id/recomProfilePic"
-                android:layout_width="match_parent"
-                android:layout_height="510dp"
-                android:padding="16dp"
-                app:srcCompat="@drawable/black_girl_prof"
-                android:scaleType="centerCrop"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/baseline_location_on_24"
-                    android:layout_marginLeft="10dp"/>
-
-                <TextView
-                    android:id="@+id/recomLocation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="1dp"
-                    android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary"/>
-            </LinearLayout>
-            <TextView
-                android:id="@+id/recomSimilarity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:textAppearance="?attr/textAppearanceBody2"
-                android:textColor="?android:textColorSecondary"/>
-
-            <!--LinkUp Button-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/recomLinkUpBtn"
+                <TextView
+                    android:id="@+id/recomUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:layout_gravity="center"/>
+
+                <!--Profile Image view-->
+                <ImageView
+                    android:id="@+id/recomProfilePic"
+                    android:layout_width="match_parent"
+                    android:layout_height="431dp"
+                    android:padding="16dp"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/black_girl_prof" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/linkUp"
-                    android:layout_gravity="center"
-                    android:textSize="20sp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp" />
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_location_on_24"
+                        android:layout_marginLeft="10dp"/>
+
+                    <TextView
+                        android:id="@+id/recomLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:textAppearance="?attr/textAppearanceBody2"
+                        android:textColor="?android:attr/textColorSecondary"/>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/recomSimilarity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="?android:textColorSecondary"/>
+
+                <!--LinkUp Button-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/recomLinkUpBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/linkUp"
+                        android:layout_gravity="center"
+                        android:textSize="20sp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp" />
 
 
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 

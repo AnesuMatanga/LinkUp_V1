@@ -12,7 +12,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-       <!--ViewPager2 code to help with the adapter-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LinkUp Recommendations"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"/>
+
+        <!--ViewPager2 code to help with the adapter-->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="4dp"
+    app:cardElevation="2dp">
+
+    <!--Using Relative layout as its better for this-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/userChatImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/userProfileImage"
+            android:src="@drawable/black_girl_prof"
+            app:shapeAppearanceOverlay="@style/CircularImageView"/>
+
+        <TextView
+            android:id="@+id/userChatUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/userChatImage"
+            android:text="Username"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/userChatLastMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/userChatUsername"
+            android:layout_toEndOf="@id/userChatImage"
+            android:text="Last Message"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/userChatNewMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/userChatUsername"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/badge_background"
+            android:text="4+"
+            android:visibility="visible"/>
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

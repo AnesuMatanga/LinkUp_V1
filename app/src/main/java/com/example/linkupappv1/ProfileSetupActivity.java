@@ -192,7 +192,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
         String userID = currentUser.getUid();
 
         //Get the user inputs and turn into strings
-        String username = pUsernameET.getText().toString();
+        String username = "@" + pUsernameET.getText().toString();
         String bio = pBioET.getText().toString();
         String interests = pInterestsET.getText().toString();
         String location = pLocationET.getText().toString();
