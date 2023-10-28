@@ -113,20 +113,20 @@ public class ProfileActivity extends AppCompatActivity {
                     //First check if document exists before trying to access it
                     if (documentSnapshot.exists()) {
                         //Get the document Info and set it in user profile in real time
-                        username = documentSnapshot.getString(PROFILE_USERNAME);
-                        bio = documentSnapshot.getString(PROFILE_BIO);
-                        profile_pic = documentSnapshot.getString(PROFILE_PIC);
-                        interests = documentSnapshot.getString(PROFILE_INTERESTS);
-                        location = documentSnapshot.getString(PROFILE_LOCATION);
+                        otherUsername = documentSnapshot.getString(PROFILE_USERNAME);
+                        otherBio = documentSnapshot.getString(PROFILE_BIO);
+                        otherProfile_pic = documentSnapshot.getString(PROFILE_PIC);
+                        otherInterests = documentSnapshot.getString(PROFILE_INTERESTS);
+                        otherLocation = documentSnapshot.getString(PROFILE_LOCATION);
 
                         //Set the username, bio and Location in the TextViews
-                        pProfUsername.setText("@" + username);
-                        pProfBio.setText(bio);
-                        pProfLocation.setText(location);
-                        pProfInterests.setText("[ " + interests + " ]");
+                        pProfUsername.setText("@" + otherUsername);
+                        pProfBio.setText(otherBio);
+                        pProfLocation.setText(otherLocation);
+                        pProfInterests.setText("[ " + otherInterests + " ]");
 
                         //Get profile image and show it on Profile page in real Time using Glide Library
-                        Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
+                        Glide.with(ProfileActivity.this).load(otherProfile_pic).into(pProfilePicIV);
                     }
                 }
             });
