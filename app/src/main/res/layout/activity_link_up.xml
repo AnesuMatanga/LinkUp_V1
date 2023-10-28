@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,10 +7,64 @@
     android:padding="16dp"
     tools:context=".LinkUpActivity">
 
-    <!--chat_items will be populated using recyclerview-->
+    <!--chat_items will be populated using recyclerview
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatListRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"/> -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Under Construction"
+            android:textSize="22sp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:text="Please understand that Due to the limitation of 10 Classes, couldnt do this activity
+as it would have needed me to make 3 classes for the adapter, model and activity class. This
+is to maintain code readibility, encapsulation and also maintainability."
+            android:textSize="20sp"
+            />
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:text="This was a very big project for me especially since i was doing it by myself
+but i strived to submit it working as needed. There is a lot more to be done but the
+functionality is working and the idea can be seen. I will keep working on the app
+even after to then get it to a point where i can potentially put it into the world
+I'm excited as I learnt a lot while making it. This was Fun!"
+            android:textSize="20sp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:text="LinkUp App Description"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:text="Please read the comment on top of Login Activity to see the description"
+            android:textSize="20sp"
+            />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -22,6 +22,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * @LinkUp App Idea Explanation
+ * @Author: Anesu Maxwell Matanga
+ * @ID: 20010613
+ *
+ */
 public class LoginActivity extends AppCompatActivity {
 
     //Create objects

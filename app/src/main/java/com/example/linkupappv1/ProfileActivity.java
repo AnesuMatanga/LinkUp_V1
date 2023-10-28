@@ -133,7 +133,7 @@ public class ProfileActivity extends AppCompatActivity {
                         pProfInterests.setText("[ " + otherInterests + ", " + interests2 + " ]");
 
                         //Get profile image and show it on Profile page in real Time using Glide Library
-                        Glide.with(ProfileActivity.this).load(otherProfile_pic).into(pProfilePicIV);
+                        Glide.with(ProfileActivity.this).load(otherProfile_pic).centerCrop().placeholder(R.drawable.black_girl_prof).into(pProfilePicIV);
                     }
                 }
             });
@@ -168,7 +168,7 @@ public class ProfileActivity extends AppCompatActivity {
                         pProfInterests.setText("[ " + interests + ", " + interests2 + " ]");
 
                         //Get profile image and show it on Profile page in real Time using Glide Library
-                        Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
+                        Glide.with(ProfileActivity.this).load(profile_pic).centerCrop().placeholder(R.drawable.black_girl_prof).into(pProfilePicIV);
                     }
                 }
             });
@@ -182,7 +182,7 @@ public class ProfileActivity extends AppCompatActivity {
             pProfInterests.setText("[ " + interests + ", " + interests2 + " ]");
 
             //Get profile image and show it on Profile page in real Time using Glide Library
-            Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
+            Glide.with(ProfileActivity.this).load(profile_pic).centerCrop().placeholder(R.drawable.black_girl_prof).into(pProfilePicIV);
         }
     }
 
