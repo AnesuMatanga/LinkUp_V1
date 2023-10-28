@@ -52,6 +52,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
     public static final String USERNAME_KEY = "username";
     public static final String BIO_KEY = "bio";
     public static final String INTERESTS_KEY = "interests";
+    public static final String INTERESTS_KEY2 = "interests2";
     public static final String LOCATION_KEY = "location";
 
     //Set up a Firestore DB to later store user profile details
@@ -199,6 +200,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
         String interests = pInterestsET.getText().toString();
         String location = pLocationET.getText().toString();
         String profilePic = pProfilePicURL;
+        String interests2 = pInterestsET2.getText().toString();
 
         //To validate interest input interest from user
         String[] userInterests = interests.split(",");
@@ -232,6 +234,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
         dataToSave.put(BIO_KEY, bio);
         dataToSave.put(INTERESTS_KEY, interests);
         dataToSave.put(LOCATION_KEY, location);
+        dataToSave.put(INTERESTS_KEY2, interests2);
 
         //Now save to the database using the doc we created at the start
         userProfileDocRef.set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {

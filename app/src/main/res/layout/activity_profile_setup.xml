@@ -120,8 +120,7 @@
             android:layout_marginTop="20dp"
             android:paddingLeft="12dp"
             android:hint="Favourite thing no.2"
-            android:textSize="20sp"
-            android:inputType="none"/>
+            android:textSize="20sp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

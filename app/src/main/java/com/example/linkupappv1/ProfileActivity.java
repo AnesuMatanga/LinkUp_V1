@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,12 +41,15 @@ public class ProfileActivity extends AppCompatActivity {
     private static String username = "";
     private static String bio = "";
     private static String interests = "";
+    private static String interests2 = "";
     private static String location = "";
     private static String profile_pic = "";
 
     private static String otherUsername = "";
     private static String otherBio = "";
     private static String otherInterests = "";
+
+    private static String otherInterests2 = "";
     private static String otherLocation = "";
     private static String otherProfile_pic = "";
 
@@ -53,12 +57,13 @@ public class ProfileActivity extends AppCompatActivity {
     public static final String PROFILE_USERNAME = "username";
     public static final String PROFILE_BIO = "bio";
     public static final String PROFILE_INTERESTS = "interests";
+    public static final String PROFILE_INTERESTS2 = "interests2";
     public static final String PROFILE_PIC = "profile_pic";
     public static final String PROFILE_LOCATION = "location";
 
     //Create view objects
     TextView pRequestsCountTV, pLinkUpsCountTV, pRequestsTV, pLinkUpsTV,
-            pProfUsername, pProfBio, pProfLocation, pProfInterests;
+            pProfUsername, pProfBio, pProfLocation, pProfInterests, pProfInterests2;
 
     Button pEditProfileBtn, pLinkUpBtn, pMessageBtn;
     Button[] profileButtons = new Button[3];
@@ -72,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
     String recomUserId;
 
     BottomNavigationView bottomNavigationView;
-    ImageView pProfilePicIV;
+    ShapeableImageView pProfilePicIV;
     Uri pProfPicURI;
 
     //For current User
@@ -116,12 +121,13 @@ public class ProfileActivity extends AppCompatActivity {
                         otherProfile_pic = documentSnapshot.getString(PROFILE_PIC);
                         otherInterests = documentSnapshot.getString(PROFILE_INTERESTS);
                         otherLocation = documentSnapshot.getString(PROFILE_LOCATION);
+                        otherInterests2 = documentSnapshot.getString(PROFILE_INTERESTS2);
 
                         //Set the username, bio and Location in the TextViews
                         pProfUsername.setText("@" + otherUsername);
                         pProfBio.setText(otherBio);
                         pProfLocation.setText(otherLocation);
-                        pProfInterests.setText("[ " + otherInterests + " ]");
+                        pProfInterests.setText("[ " + otherInterests + ", " + interests2 + " ]");
 
                         //Get profile image and show it on Profile page in real Time using Glide Library
                         Glide.with(ProfileActivity.this).load(otherProfile_pic).into(pProfilePicIV);
@@ -148,6 +154,7 @@ public class ProfileActivity extends AppCompatActivity {
                         bio = documentSnapshot.getString(PROFILE_BIO);
                         profile_pic = documentSnapshot.getString(PROFILE_PIC);
                         interests = documentSnapshot.getString(PROFILE_INTERESTS);
+                        interests2 = documentSnapshot.getString(PROFILE_INTERESTS2);
                         location = documentSnapshot.getString(PROFILE_LOCATION);
                         Log.d("Current HasQUERIED", "Current HasQueried: " + hasQueriedFirestore);
 
@@ -155,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity {
                         pProfUsername.setText(username);
                         pProfBio.setText(bio);
                         pProfLocation.setText(location);
-                        pProfInterests.setText("[ " + interests + " ]");
+                        pProfInterests.setText("[ " + interests + ", " + interests2 + " ]");
 
                         //Get profile image and show it on Profile page in real Time using Glide Library
                         Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
@@ -169,7 +176,7 @@ public class ProfileActivity extends AppCompatActivity {
             Log.d("Current Username", "ELSE Current Username: " + username);
             pProfBio.setText(bio);
             pProfLocation.setText(location);
-            pProfInterests.setText("[ " + interests + " ]");
+            pProfInterests.setText("[ " + interests + ", " + interests2 + " ]");
 
             //Get profile image and show it on Profile page in real Time using Glide Library
             Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
