@@ -94,8 +94,7 @@ public class ProfileActivity extends AppCompatActivity {
         currentUser = pAuth.getCurrentUser();
 
         Log.d("Recommended User Id: ", "B4 RecomUserId: " + recomUserId);
-        Toast.makeText(ProfileActivity.this, "RecomUserId: " + recomUserId,
-                Toast.LENGTH_SHORT).show();
+
 
         if (recomUserId != null && (!recomUserId.equals("")) && (!recomUserId.equals(currentUser.getUid()))) {
             //Initialize doc ref
@@ -103,8 +102,6 @@ public class ProfileActivity extends AppCompatActivity {
 
 
             Log.d("Recommended User Id: ", "After RecomUserId: " + recomUserId);
-            Toast.makeText(ProfileActivity.this, "RecomUserId: " + recomUserId,
-                    Toast.LENGTH_SHORT).show();
 
             //Use 'this' to make sure the listener is not used when needed to avoid over battery usage for user and also save cost
             pDocRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
@@ -134,8 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
         //Initialize doc ref
         pDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
         Log.d("Current User Id: ", "Current UserId: " + currentUser.getUid());
-        Toast.makeText(ProfileActivity.this, "Current UserId",
-                Toast.LENGTH_SHORT).show();
+
 
         //Check if its a currentUser Checking out their own profile
         if (!hasQueriedFirestore) {

@@ -150,8 +150,6 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
                                         DocumentSnapshot userDocument = task.getResult().getDocuments().get(0);
                                         String userId = userDocument.getId();
                                         recomUserID[0] = userId;
-                                        //Direct to profile of clicked user
-                                        friendRequestsDoc = FirebaseFirestore.getInstance().document("users/" + recomUserID[0] + "/friendRequests/" + friendUsername);
                                         //Get user document from firestore containing Current username
                                         final String[] currentUsername = new String[1];
                                         fDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
@@ -162,38 +160,44 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
                                                 if (documentSnapshot.exists()) {
                                                     String currentUserDoc = documentSnapshot.getString("username");
                                                     currentUsername[0] = currentUserDoc;
+
+                                                    //Direct to profile of clicked user
+                                                    friendRequestsDoc = FirebaseFirestore.getInstance().document("users/" + recomUserID[0] + "/friendRequests/" + currentUsername[0]);
+                                                    //Create data i want to save in my FriendRequestDocument
+                                                    Map<String, Object> dataToSave = new HashMap<String, Object>();
+                                                    //dataToSave.put("friendRequestUsername", friendUsername);
+                                                    dataToSave.put("username", currentUsername[0]);Log.d("FriendRecomAdapter", "No user found with that username");
+                                                    //Toast for debugging purposes
+                                                    Log.d("Current Username", "CurrentUsername: " + currentUsername[0]);
+                                                    Toast.makeText(holder.itemView.getContext(), "No user found with that username!",
+                                                            Toast.LENGTH_SHORT).show();
+
+                                                    friendRequestsDoc.set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            Log.d("FriendRequest", "Friend Request Has been sent!");
+                                                            //Make a toast to show user
+                                                            Toast.makeText(holder.itemView.getContext(), "LinkUp Request Sent!",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w(TAG, "Sorry, Couldn't send LinkUp Request", e);
+                                                            //Make a toast to show user
+                                                            Toast.makeText(holder.itemView.getContext(), "Sorry, Couldn't send LinkUp Request",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
                                                 }
                                             }
                                         });
 
-                                        //Create data i want to save in my FriendRequestDocument
-                                        Map<String, Object> dataToSave = new HashMap<String, Object>();
-                                        dataToSave.put("friendRequestUsername", friendUsername);
-                                        dataToSave.put("username", currentUsername[0]);
 
-                                        friendRequestsDoc.set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                Log.d("FriendRequest", "Friend Request Has been sent!");
-                                                //Make a toast to show user
-                                                Toast.makeText(holder.itemView.getContext(), "LinkUp Request Sent!",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w(TAG, "Sorry, Couldn't send LinkUp Request", e);
-                                                //Make a toast to show user
-                                                Toast.makeText(holder.itemView.getContext(), "Sorry, Couldn't send LinkUp Request",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
                                     } else {
                                         //No doc found with username
                                         Log.d("FriendRecomAdapter", "No user found with that username");
                                         //Toast for debugging purposes
-                                        Toast.makeText(holder.itemView.getContext(), "No user found with that username!",
-                                                Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
                                     Log.e("FriendRecomAdapter", "Task was unsuccessful");
