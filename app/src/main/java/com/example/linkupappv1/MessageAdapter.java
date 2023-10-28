@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Firebase;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -107,4 +108,34 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
 
     }
+
+    /**
+     * Model class for message(chats between users)
+     */
+    public static class Message {
+        public String senderID;
+        public String messageContent;
+
+        //TimeStamp for when message was sent
+        public Timestamp timestamp;
+
+        //Empty Constructor
+        public Message() {
+
+        }
+
+        //Getters & setters
+        public String getMessageContent(){
+            return this.messageContent;
+        }
+
+        public Timestamp getTimestamp(){
+            return this.timestamp;
+        }
+
+        public String getSenderID(){
+            return this.senderID;
+        }
+    }
+
 }

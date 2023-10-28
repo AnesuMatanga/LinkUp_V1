@@ -50,7 +50,7 @@ public class MessageActivity extends AppCompatActivity {
     //Recycler View and Adapter to use to show messages in chat
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;
-    private List<Message> messages = new ArrayList<>();
+    private List<MessageAdapter.Message> messages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +136,7 @@ public class MessageActivity extends AppCompatActivity {
                     if(documentChange.getType() == DocumentChange.Type.ADDED) {
                         //If new message has been added notify adapter for data change
                         //ToDo Update the UI here for new message
-                        Message newMessage = documentChange.getDocument().toObject(Message.class);
+                        MessageAdapter.Message newMessage = documentChange.getDocument().toObject(MessageAdapter.Message.class);
                         //Add to the list of messages to be populated on the screen
                         messages.add(newMessage);
                         ProfileActivity.hasNewMessages = true;
