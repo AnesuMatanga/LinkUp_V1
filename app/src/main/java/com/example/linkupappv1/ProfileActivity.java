@@ -86,6 +86,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         System.out.println("****IN ON START()***");
+        Log.d("IN Current HASQUERIED", "IN Current HasQueried: " + hasQueriedFirestore);
 
 
         System.out.println("****Current User*** : " + currentUser);
@@ -148,9 +149,10 @@ public class ProfileActivity extends AppCompatActivity {
                         profile_pic = documentSnapshot.getString(PROFILE_PIC);
                         interests = documentSnapshot.getString(PROFILE_INTERESTS);
                         location = documentSnapshot.getString(PROFILE_LOCATION);
+                        Log.d("Current HasQUERIED", "Current HasQueried: " + hasQueriedFirestore);
 
                         //Set the username, bio and Location in the TextViews
-                        pProfUsername.setText("@" + username);
+                        pProfUsername.setText(username);
                         pProfBio.setText(bio);
                         pProfLocation.setText(location);
                         pProfInterests.setText("[ " + interests + " ]");
@@ -162,7 +164,9 @@ public class ProfileActivity extends AppCompatActivity {
             });
         } else {
             //Set the username, bio and Location in the TextViews
-            pProfUsername.setText("@" + username);
+            Log.d("ELSE Current HasQUERIED", "ELSE Current HasQueried: " + hasQueriedFirestore);
+            pProfUsername.setText(username);
+            Log.d("Current Username", "ELSE Current Username: " + username);
             pProfBio.setText(bio);
             pProfLocation.setText(location);
             pProfInterests.setText("[ " + interests + " ]");

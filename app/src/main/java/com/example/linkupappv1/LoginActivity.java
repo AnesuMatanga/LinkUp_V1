@@ -118,6 +118,8 @@ public class LoginActivity extends AppCompatActivity {
                                     //FirebaseUser user = mAuth.getCurrentUser();
                                     Toast.makeText(LoginActivity.this, "Authentication Succeeded.",
                                             Toast.LENGTH_SHORT).show();
+                                    //Reset has queried
+                                    ProfileActivity.hasQueriedFirestore = false;
                                     //Create Intent to open main activity
                                     Intent loginIntent = new Intent(getApplicationContext(), MainActivity.class);
                                     //Start the activity

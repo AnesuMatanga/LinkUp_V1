@@ -169,8 +169,6 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
                                                     dataToSave.put("username", currentUsername[0]);Log.d("FriendRecomAdapter", "No user found with that username");
                                                     //Toast for debugging purposes
                                                     Log.d("Current Username", "CurrentUsername: " + currentUsername[0]);
-                                                    Toast.makeText(holder.itemView.getContext(), "No user found with that username!",
-                                                            Toast.LENGTH_SHORT).show();
 
                                                     friendRequestsDoc.set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override

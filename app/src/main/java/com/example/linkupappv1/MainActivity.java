@@ -63,9 +63,10 @@ public class MainActivity extends AppCompatActivity {
                 //Check which button was clicked and do something
                 System.out.println("Clicked LinkUpButton");
                 //Firebase.analytics.logEvent("linkUp clicked", null);
-
+                Boolean hasNotQueried = getIntent().getBooleanExtra("hasNotQueried", false);
                 //Intent to move to the desired activity
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("hasNotQueried", hasNotQueried);
                 startActivity(intent);
 
             }
