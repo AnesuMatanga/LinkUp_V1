@@ -7,13 +7,20 @@
     android:padding="8dp"
     android:layout_margin="10dp">
 
-    <!--For how the message sent will look like in chat-->
-    <TextView
-        android:id="@+id/messageContent"
+    <RelativeLayout
+        android:id="@+id/messageRelativeLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hey there"
-        android:textSize="16sp"/>
+        android:layout_height="wrap_content">
+        <!--For how the message sent will look like in chat-->
+        <TextView
+            android:id="@+id/messageContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hey there"
+            android:padding="3dp"
+            android:textSize="16sp"/>
+
+    </RelativeLayout>
 
 
 </com.google.android.material.card.MaterialCardView>

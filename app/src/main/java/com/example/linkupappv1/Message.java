@@ -24,6 +24,10 @@ public class Message {
         return this.messageContent;
     }
 
+    public Timestamp getTimestamp(){
+        return this.timestamp;
+    }
+
     public String getSenderID(){
         return this.senderID;
     }

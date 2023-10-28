@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     //Initialize list to hold the message data to be displayed in the RecyclerView
     private List<Message> messages;
     FirebaseUser currentUser;
+    FirebaseAuth auth;
     //Document containing currentUser Details
     private DocumentReference mDocRef;
 
@@ -62,6 +64,25 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Message currentMessage = messages.get(position);
         holder.messageContent.setText(currentMessage.getMessageContent());
+
+        //Get Current User
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+
+        Log.d("CurrentUser Message", "CurrentUser Message: " + currentUser.getUid());
+        Log.d("CurrentUser Message2", "CurrentUser Message2: " + currentMessage.getSenderID());
+
+        //Place the messages I sent to the other side
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        if (currentUser.getUid().equals(currentMessage.getSenderID())){
+            //Add rule
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            holder.messageContent.setLayoutParams(params);
+        } else {
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            holder.messageContent.setLayoutParams(params);
+        }
     }
 
     @Override
@@ -82,6 +103,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             super(itemView);
             //Using R.id
             messageContent = itemView.findViewById(R.id.messageContent);
+
         }
 
     }

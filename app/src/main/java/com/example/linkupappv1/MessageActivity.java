@@ -93,8 +93,10 @@ public class MessageActivity extends AppCompatActivity {
                 //Create a new message document with msg data including timeStamp
                 Map<String, Object> message = new HashMap<String, Object>();
                 message.put("messageContent", messageInputEditText.getText().toString());
-                message.put("senderId", currentUser.getUid().toString());
+                message.put("senderID", currentUser.getUid().toString());
                 message.put("timestamp", FieldValue.serverTimestamp());
+
+                ProfileActivity.hasNewMessages = false;
 
                 //Adding the message to Firestore
                 messagesReference.add(message).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -137,7 +139,7 @@ public class MessageActivity extends AppCompatActivity {
                         Message newMessage = documentChange.getDocument().toObject(Message.class);
                         //Add to the list of messages to be populated on the screen
                         messages.add(newMessage);
-
+                        ProfileActivity.hasNewMessages = true;
                     }
                 }
                 //Let the adapter know data has changed

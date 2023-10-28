@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -36,6 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     //Query the database only the first time a user accesses app to avoid unnecessary querying using a Flag
     public static boolean hasQueriedFirestore = false;
+    public static boolean hasNewMessages = false;
     public static boolean hasQueriedOtherUserFireStore = false;
     // Declare variables to hold strings for views as static to help with the above cause
     private static String username = "";
@@ -64,6 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
     //Create view objects
     TextView pRequestsCountTV, pLinkUpsCountTV, pRequestsTV, pLinkUpsTV,
             pProfUsername, pProfBio, pProfLocation, pProfInterests, pProfInterests2;
+    MaterialTextView profileNewMessageBadge;
 
     Button pEditProfileBtn, pLinkUpBtn, pMessageBtn;
     Button[] profileButtons = new Button[3];
@@ -208,6 +211,7 @@ public class ProfileActivity extends AppCompatActivity {
         pEditProfileBtn = findViewById(R.id.editProfile);
         pLinkUpBtn = findViewById(R.id.profileLinkUpBtn);
         pMessageBtn = findViewById(R.id.profileMessageBtn);
+        profileNewMessageBadge = findViewById(R.id.profileChatNewMessage);
         //Get recipientUserId(User the message is being sent to) sent through intent as extra to create unique chatId for users
         recomUserId = getIntent().getStringExtra("recomUserId");
 
@@ -218,8 +222,11 @@ public class ProfileActivity extends AppCompatActivity {
         //Set visibility of buttons based if profile belongs to currentUser or not
         if (recomUserId != null && (!recomUserId.equals("")) && (!recomUserId.equals(currentUser.getUid()))){
             pEditProfileBtn.setVisibility(View.GONE);
-            pLinkUpBtn.setVisibility(View.VISIBLE);
+            //pLinkUpBtn.setVisibility(View.VISIBLE);
             bottomNavigationView.setVisibility(View.GONE);
+            if(hasNewMessages){
+                profileNewMessageBadge.setVisibility(View.VISIBLE);
+            }
         } else {
             pMessageBtn.setVisibility(View.GONE);
         }
