@@ -30,4 +30,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="userProfileImage">user image</string>
     <string name="know_me">Know Me</string>
+    <string name="favouriteInterests">Favourite interests (e.g Coding, Reading)</string>
+    <string name="locationHelperText">City only for safety purposes (e.g Auckland)</string>
 </resources>

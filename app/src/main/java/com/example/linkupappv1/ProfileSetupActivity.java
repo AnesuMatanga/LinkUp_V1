@@ -82,7 +82,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
     private StorageReference pStorageReference;
 
     //For interests to use in autoCompleteTextView
-    AutoCompleteTextView pInterestsET;
+    AutoCompleteTextView pInterestsET, pInterestsET2;
     //Adding as many interests that i can think of to try autoComplete for user
     String[] interestsList = {"football", "soccer", "cooking", "braiding", "gaming", "reading",
         "travelling", "hiking", "baking", "Photography", "Traveling", "Cooking", "Blogging", "Gaming", "Hiking", "Reading",
@@ -139,6 +139,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
         pUsernameET = findViewById(R.id.profileUsername);
         pBioET = findViewById(R.id.profileStatus);
         pInterestsET = findViewById(R.id.profileInterests);
+        pInterestsET2 = findViewById(R.id.profileInterests2);
         pLocationET = findViewById(R.id.profileLocation);
         pProfileSaveBtn = findViewById(R.id.profileSaveBtn);
         pProfilePicUploadBtn = findViewById(R.id.profilePicUploadBtn);
@@ -150,8 +151,9 @@ public class ProfileSetupActivity extends AppCompatActivity {
         pStorageReference = FirebaseStorage.getInstance().getReference("profile_images");
 
         //Set array adapter to use with the pInterestsET to populate from the interestsList
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, interestsList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.favourite_item, interestsList);
         pInterestsET.setAdapter(adapter);
+        pInterestsET2.setAdapter(adapter);
 
 
         //Check if User Not Logged in
