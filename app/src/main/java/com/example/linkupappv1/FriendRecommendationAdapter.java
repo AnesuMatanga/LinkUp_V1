@@ -3,6 +3,7 @@ package com.example.linkupappv1;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import static androidx.core.content.ContextCompat.startActivity;
 
+
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -132,44 +133,77 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
         holder.recomLinkUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //Get the UID of the recommended User from firestore
+                db = FirebaseFirestore.getInstance();
+                usersRef = db.collection("users");
+                final String[] recomUserID = new String[1];
+
+                //Now search for the username, also using limit(1) to make sure only one doc is returned
+                usersRef.whereEqualTo("username", friendUsername).limit(1).get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    //If doc has been found
+                                    if (!task.getResult().isEmpty()){
+                                        DocumentSnapshot userDocument = task.getResult().getDocuments().get(0);
+                                        String userId = userDocument.getId();
+                                        recomUserID[0] = userId;
+                                        //Direct to profile of clicked user
+                                        friendRequestsDoc = FirebaseFirestore.getInstance().document("users/" + recomUserID[0] + "/friendRequests/" + friendUsername);
+                                        //Get user document from firestore containing Current username
+                                        final String[] currentUsername = new String[1];
+                                        fDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
+                                        fDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                //Check if document exists first
+                                                if (documentSnapshot.exists()) {
+                                                    String currentUserDoc = documentSnapshot.getString("username");
+                                                    currentUsername[0] = currentUserDoc;
+                                                }
+                                            }
+                                        });
+
+                                        //Create data i want to save in my FriendRequestDocument
+                                        Map<String, Object> dataToSave = new HashMap<String, Object>();
+                                        dataToSave.put("friendRequestUsername", friendUsername);
+                                        dataToSave.put("username", currentUsername[0]);
+
+                                        friendRequestsDoc.set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Log.d("FriendRequest", "Friend Request Has been sent!");
+                                                //Make a toast to show user
+                                                Toast.makeText(holder.itemView.getContext(), "LinkUp Request Sent!",
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Sorry, Couldn't send LinkUp Request", e);
+                                                //Make a toast to show user
+                                                Toast.makeText(holder.itemView.getContext(), "Sorry, Couldn't send LinkUp Request",
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    } else {
+                                        //No doc found with username
+                                        Log.d("FriendRecomAdapter", "No user found with that username");
+                                        //Toast for debugging purposes
+                                        Toast.makeText(holder.itemView.getContext(), "No user found with that username!",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Log.e("FriendRecomAdapter", "Task was unsuccessful");
+                                }
+                            }
+                        });
                 //Set friendRequestDoc
-                friendRequestsDoc = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid() + "/friendRequests/" + friendUsername);
-                //Get user document from firestore containing Current username
-                final String[] currentUsername = new String[1];
-                fDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
-                fDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        //Check if document exists first
-                        if (documentSnapshot.exists()) {
-                           String currentUserDoc = documentSnapshot.getString("username");
-                           currentUsername[0] = currentUserDoc;
-                        }
-                    }
-                });
+                //String friendUserID = getUniqueUserID(friendUsername, holder);
+                //friendRequestsDoc = FirebaseFirestore.getInstance().document("users/" + friendUserID + "/friendRequests/" + friendUsername);
 
-                //Create data i want to save in my FriendRequestDocument
-                Map<String, Object> dataToSave = new HashMap<String, Object>();
-                dataToSave.put("friendRequestUsername", friendUsername);
-                dataToSave.put("username", currentUsername[0]);
-
-                friendRequestsDoc.set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("FriendRequest", "Friend Request Has been sent!");
-                        //Make a toast to show user
-                        Toast.makeText(holder.itemView.getContext(), "LinkUp Request Sent!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Sorry, Couldn't send LinkUp Request", e);
-                        //Make a toast to show user
-                        Toast.makeText(holder.itemView.getContext(), "Sorry, Couldn't send LinkUp Request",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
         });
     }
@@ -203,4 +237,40 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
         }
 
     }
+
+    //Method to get username Unique Firestore UID
+  /*  public void getUniqueUserID(String friendUsername, ViewHolder holder, DocumentReference friendRequestsDoc) {
+        //Get the UID of the recommended User from firestore
+        db = FirebaseFirestore.getInstance();
+        usersRef = db.collection("users");
+        final String[] recomUserID = new String[1];
+        this.friendRequestsDoc = friendRequestsDoc;
+
+        //Now search for the username, also using limit(1) to make sure only one doc is returned
+        usersRef.whereEqualTo("username", friendUsername).limit(1).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            //If doc has been found
+                            if (!task.getResult().isEmpty()){
+                                DocumentSnapshot userDocument = task.getResult().getDocuments().get(0);
+                                String userId = userDocument.getId();
+                                recomUserID[0] = userId;
+                                //Direct to profile of clicked user
+                                friendRequestsDoc = FirebaseFirestore.getInstance().document("users/" + recomUserID[0] + "/friendRequests/" + friendUsername);
+                            } else {
+                                //No doc found with username
+                                Log.d("FriendRecomAdapter", "No user found with that username");
+                                //Toast for debugging purposes
+                                Toast.makeText(holder.itemView.getContext(), "No user found with that username!",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Log.e("FriendRecomAdapter", "Task was unsuccessful");
+                        }
+                    }
+                });
+        return recomUserID[0];
+    } */
 }
