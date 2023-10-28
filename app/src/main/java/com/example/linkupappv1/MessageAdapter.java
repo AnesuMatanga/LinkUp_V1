@@ -43,9 +43,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     private DocumentReference messagesDoc;
     //Constructor that gets the list and also current user
-    public MessageAdapter(List<Message> messages, FirebaseUser currentUser){
+    public MessageAdapter(List<Message> messages){
         this.messages = messages;
-        this.currentUser = currentUser;
     }
 
     //To help with inflating friend_reco.xml also

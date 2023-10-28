@@ -84,6 +84,7 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
         //Initialize variables to hold data
         String friendUsername;
         friendUsername = friendRecommendations.get(position).username;
+        Log.d("Recommended Usernames: ", "FriendUsername: " + friendUsername);
         final String[] recomUserID = new String[1];
 
         //Set onClickListener for when Know Me Button is clicked to direct people to profile
@@ -105,6 +106,13 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
                                         DocumentSnapshot userDocument = task.getResult().getDocuments().get(0);
                                         String userId = userDocument.getId();
                                         recomUserID[0] = userId;
+
+                                        //Direct to profile of clicked user
+                                        Intent intent = new Intent(holder.itemView.getContext(), ProfileActivity.class);
+                                        //Put Extra to sent to activity
+                                        intent.putExtra("recomUserId", recomUserID[0]);
+                                        Log.d("Recommended UserID: ", "RECOMUSERID: " + recomUserID[0]);
+                                        holder.itemView.getContext().startActivity(intent);
                                     } else {
                                         //No doc found with username
                                         Log.d("FriendRecomAdapter", "No user found with that username");
@@ -117,12 +125,6 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
                                 }
                             }
                         });
-
-                //Direct to profile of clicked user
-                Intent intent = new Intent(holder.itemView.getContext(), ProfileActivity.class);
-                //Put Extra to sent to activity
-                intent.putExtra("recomUserId", recomUserID[0]);
-                holder.itemView.getContext().startActivity(intent);
             }
         });
 

@@ -9,10 +9,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
@@ -32,12 +35,19 @@ public class ProfileActivity extends AppCompatActivity {
 
     //Query the database only the first time a user accesses app to avoid unnecessary querying using a Flag
     public static boolean hasQueriedFirestore = false;
+    public static boolean hasQueriedOtherUserFireStore = false;
     // Declare variables to hold strings for views as static to help with the above cause
     private static String username = "";
     private static String bio = "";
     private static String interests = "";
     private static String location = "";
     private static String profile_pic = "";
+
+    private static String otherUsername = "";
+    private static String otherBio = "";
+    private static String otherInterests = "";
+    private static String otherLocation = "";
+    private static String otherProfile_pic = "";
 
     //Constants for keys to help query the Firestore
     public static final String PROFILE_USERNAME = "username";
@@ -49,6 +59,9 @@ public class ProfileActivity extends AppCompatActivity {
     //Create view objects
     TextView pRequestsCountTV, pLinkUpsCountTV, pRequestsTV, pLinkUpsTV,
             pProfUsername, pProfBio, pProfLocation, pProfInterests;
+
+    Button pEditProfileBtn, pLinkUpBtn, pMessageBtn;
+    Button[] profileButtons = new Button[3];
     //For menu ids
     final int homePage = R.id.homePage;
     final int linkUpPage = R.id.linkupPage;
@@ -74,21 +87,59 @@ public class ProfileActivity extends AppCompatActivity {
         super.onStart();
         System.out.println("****IN ON START()***");
 
+
+        System.out.println("****Current User*** : " + currentUser);
         //Get document reference for currently signed in user utilising Firebase libraries
         pAuth = FirebaseAuth.getInstance();
         currentUser = pAuth.getCurrentUser();
 
+        Log.d("Recommended User Id: ", "B4 RecomUserId: " + recomUserId);
+        Toast.makeText(ProfileActivity.this, "RecomUserId: " + recomUserId,
+                Toast.LENGTH_SHORT).show();
+
+        if (recomUserId != null && (!recomUserId.equals("")) && (!recomUserId.equals(currentUser.getUid()))) {
+            //Initialize doc ref
+            pDocRef = FirebaseFirestore.getInstance().document("users/" + recomUserId);
+
+
+            Log.d("Recommended User Id: ", "After RecomUserId: " + recomUserId);
+            Toast.makeText(ProfileActivity.this, "RecomUserId: " + recomUserId,
+                    Toast.LENGTH_SHORT).show();
+
+            //Use 'this' to make sure the listener is not used when needed to avoid over battery usage for user and also save cost
+            pDocRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                    //First check if document exists before trying to access it
+                    if (documentSnapshot.exists()) {
+                        //Get the document Info and set it in user profile in real time
+                        username = documentSnapshot.getString(PROFILE_USERNAME);
+                        bio = documentSnapshot.getString(PROFILE_BIO);
+                        profile_pic = documentSnapshot.getString(PROFILE_PIC);
+                        interests = documentSnapshot.getString(PROFILE_INTERESTS);
+                        location = documentSnapshot.getString(PROFILE_LOCATION);
+
+                        //Set the username, bio and Location in the TextViews
+                        pProfUsername.setText("@" + username);
+                        pProfBio.setText(bio);
+                        pProfLocation.setText(location);
+                        pProfInterests.setText("[ " + interests + " ]");
+
+                        //Get profile image and show it on Profile page in real Time using Glide Library
+                        Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
+                    }
+                }
+            });
+        } else {
+        //Initialize doc ref
+        pDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
+        Log.d("Current User Id: ", "Current UserId: " + currentUser.getUid());
+        Toast.makeText(ProfileActivity.this, "Current UserId",
+                Toast.LENGTH_SHORT).show();
+
         //Check if its a currentUser Checking out their own profile
-        //if (recomUserId == currentUser.getUid()) {
         if (!hasQueriedFirestore) {
             hasQueriedFirestore = true;
-
-
-            System.out.println("****Current User*** : " + currentUser);
-
-            //Initialize doc ref
-            pDocRef = FirebaseFirestore.getInstance().document("users/" + currentUser.getUid());
-
             //Use 'this' to make sure the listener is not used when needed to avoid over battery usage for user and also save cost
             pDocRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                 @Override
@@ -123,14 +174,18 @@ public class ProfileActivity extends AppCompatActivity {
             //Get profile image and show it on Profile page in real Time using Glide Library
             Glide.with(ProfileActivity.this).load(profile_pic).into(pProfilePicIV);
         }
-
     }
+
+}
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        pAuth = FirebaseAuth.getInstance();
+        currentUser = pAuth.getCurrentUser();
 
         //Initialize the view objects using R.id
         pRequestsCountTV = findViewById(R.id.profRequestsCount);
@@ -143,12 +198,53 @@ public class ProfileActivity extends AppCompatActivity {
         pProfilePicIV = findViewById(R.id.profileImageView);
         pProfInterests = findViewById(R.id.profInterests);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
+        pEditProfileBtn = findViewById(R.id.editProfile);
+        pLinkUpBtn = findViewById(R.id.profileLinkUpBtn);
+        pMessageBtn = findViewById(R.id.profileMessageBtn);
+        //Get recipientUserId(User the message is being sent to) sent through intent as extra to create unique chatId for users
+        recomUserId = getIntent().getStringExtra("recomUserId");
+
+        Log.d("Recommended User Id: ", "RecomUserId onCreate: " + recomUserId);
+        Toast.makeText(ProfileActivity.this, "RecomUserId onCreate: " + recomUserId,
+                Toast.LENGTH_SHORT).show();
+
+        //Set visibility of buttons based if profile belongs to currentUser or not
+        if (recomUserId != null && (!recomUserId.equals("")) && (!recomUserId.equals(currentUser.getUid()))){
+            pEditProfileBtn.setVisibility(View.GONE);
+            pLinkUpBtn.setVisibility(View.VISIBLE);
+            bottomNavigationView.setVisibility(View.GONE);
+        } else {
+            pMessageBtn.setVisibility(View.GONE);
+        }
+
+        //Add buttons to button array
+        profileButtons[0] = pEditProfileBtn;
+        profileButtons[1] = pLinkUpBtn;
+        profileButtons[2] = pMessageBtn;
 
         //Set Home Selected listener
         bottomNavigationView.setSelectedItemId(R.id.profilePage);
 
-        //Get recipientUserId(User the message is being sent to) sent through intent as extra to create unique chatId for users
-        recomUserId = getIntent().getStringExtra("recomUserId");
+        //Set onClicklistener for buttons
+        for (Button btn : profileButtons) {
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (btn == pEditProfileBtn) {
+
+                    } else if (btn == pMessageBtn){
+                        //Start an intent for messaging
+                        Intent intent = new Intent(ProfileActivity.this, MessageActivity.class);
+                        //Send extras for recepientId == recomUserId (Who they are sending to)
+                        intent.putExtra("recipientUserId", recomUserId);
+                        startActivity(intent);
+                        finish();
+                    } else {
+
+                    }
+                }
+            });
+        }
 
         //Create onSetListeners for the TextViews so when a user clicks they can view their requests
         pLinkUpsTV.setOnClickListener(new View.OnClickListener() {
@@ -178,6 +274,8 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+
+        //Set onClickListeners for the buttons
 
         //Set onNavigationItemSelectedListener for bottom navigation created using Material Library
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

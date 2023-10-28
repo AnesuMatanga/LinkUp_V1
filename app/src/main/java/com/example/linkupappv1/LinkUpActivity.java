@@ -32,7 +32,7 @@ import java.util.Map;
 public class LinkUpActivity extends AppCompatActivity {
 
     //Query the database only the first time a user accesses app to avoid unnecessary querying using a Flag
-    public static boolean hasQueriedFirestore = false;
+  /*  public static boolean hasQueriedFirestore = false;
 
     //Make this constant
     public static final String AUTHOR_KEY = "author";
@@ -192,7 +192,7 @@ public class LinkUpActivity extends AppCompatActivity {
                 Log.w(TAG, "Document not saved to Cloud!", e);
             }
         });
-    }
+    }*/
 }
 
 
