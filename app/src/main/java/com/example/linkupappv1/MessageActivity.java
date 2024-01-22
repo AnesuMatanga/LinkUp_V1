@@ -15,13 +15,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -51,6 +54,7 @@ public class MessageActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;
     private List<MessageAdapter.Message> messages = new ArrayList<>();
+    private CollectionReference messagesReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +86,7 @@ public class MessageActivity extends AppCompatActivity {
         String uniqueChatId = userIds.get(0) + "_" + userIds.get(1);
 
         //Reference chat if its there, if not it will create one
-        CollectionReference messagesReference = db.collection("Chats").document(uniqueChatId).collection("Messages");
+        messagesReference = db.collection("Chats").document(uniqueChatId).collection("Messages");
 
         //Create onClickListener for sendButton
 
@@ -94,7 +98,10 @@ public class MessageActivity extends AppCompatActivity {
                 Map<String, Object> message = new HashMap<String, Object>();
                 message.put("messageContent", messageInputEditText.getText().toString());
                 message.put("senderID", currentUser.getUid().toString());
+                message.put("receiverID", recipientUserId);
                 message.put("timestamp", FieldValue.serverTimestamp());
+                //For message status. Initially its sent
+                message.put("status", "sent");
 
                 ProfileActivity.hasNewMessages = false;
 
@@ -103,6 +110,8 @@ public class MessageActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         //Message has successfully been sent to cloud
+                        //Update the message status to delivered
+                        documentReference.update("status", "delivered");
                         //Toast message for debugging purposes
                         Toast.makeText(MessageActivity.this, "Message sent successfully!",
                                 Toast.LENGTH_SHORT).show();
@@ -148,4 +157,47 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
+
+    //Update the status to seen in onResume as its called when user is interacting or viewing a chat
+    @Override
+    protected void onResume(){
+        super.onResume();
+        //Update the status of all received messages to 'seen'
+        //assuming 'receiverID' is the field where you store the ID of the message receiver
+        messagesReference.whereEqualTo("receiverID", currentUser.getUid())
+                .whereEqualTo("status", "delivered")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document: task.getResult()) {
+                                document.getReference().update("status", "seen");
+                            }
+                        }
+                    }
+                });
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
