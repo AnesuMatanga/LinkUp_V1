@@ -65,7 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     //Create view objects
     TextView pRequestsCountTV, pLinkUpsCountTV, pRequestsTV, pLinkUpsTV,
-            pProfUsername, pProfBio, pProfLocation, pProfInterests, pProfInterests2;
+            pProfUsername, pProfBio, pProfLocation, pProfInterests, pProfInterests2,
+            pProfChatsBtn, pProfChatsNewBadge;
     MaterialTextView profileNewMessageBadge;
 
     Button pEditProfileBtn, pLinkUpBtn, pMessageBtn;
@@ -212,23 +213,32 @@ public class ProfileActivity extends AppCompatActivity {
         pLinkUpBtn = findViewById(R.id.profileLinkUpBtn);
         pMessageBtn = findViewById(R.id.profileMessageBtn);
         profileNewMessageBadge = findViewById(R.id.profileChatNewMessage);
+        pProfChatsBtn = findViewById(R.id.profileChatsBtn);
+        pProfChatsNewBadge = findViewById(R.id.profileChatsNewBadge);
         //Get recipientUserId(User the message is being sent to) sent through intent as extra to create unique chatId for users
         recomUserId = getIntent().getStringExtra("recomUserId");
 
         Log.d("Recommended User Id: ", "RecomUserId onCreate: " + recomUserId);
         Toast.makeText(ProfileActivity.this, "RecomUserId onCreate: " + recomUserId,
                 Toast.LENGTH_SHORT).show();
-
+        Log.d("Outside New messages: ", String.valueOf(hasNewMessages));
         //Set visibility of buttons based if profile belongs to currentUser or not
         if (recomUserId != null && (!recomUserId.equals("")) && (!recomUserId.equals(currentUser.getUid()))){
             pEditProfileBtn.setVisibility(View.GONE);
+            //Hide Chats btn on recommended user profile
+            pProfChatsBtn.setVisibility(View.GONE);
             //pLinkUpBtn.setVisibility(View.VISIBLE);
             bottomNavigationView.setVisibility(View.GONE);
-            if(hasNewMessages){
-                profileNewMessageBadge.setVisibility(View.VISIBLE);
-            }
+            Log.d("If New messages: ", String.valueOf(hasNewMessages));
         } else {
             pMessageBtn.setVisibility(View.GONE);
+            //Set the visibility of the chats button on the user profile(Will direct to linkUps)
+            pProfChatsBtn.setVisibility(View.VISIBLE);
+            Log.d("Else New messages: ", String.valueOf(hasNewMessages));
+
+            if(hasNewMessages){
+                pProfChatsNewBadge.setVisibility(View.VISIBLE);
+            }
         }
 
         //Add buttons to button array
@@ -245,7 +255,12 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if (btn == pEditProfileBtn) {
-
+                        //If signOut Button is clicked
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+                        //Send extras for recepientId == recomUserId (Who they are sending to)
+                        startActivity(intent);
+                        finish();
                     } else if (btn == pMessageBtn){
                         //Start an intent for messaging
                         Intent intent = new Intent(ProfileActivity.this, MessageActivity.class);

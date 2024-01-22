@@ -124,6 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     //Intent to open Login page after
                                     //Create an intent to open LoginActivity
+                                    ProfileActivity.hasQueriedFirestore = false;
                                     Intent intent = new Intent(getApplicationContext(), ProfileSetupActivity.class);
                                     //Starting activity for the call passing the intent object
                                     startActivity(intent);

@@ -26,7 +26,27 @@ import com.google.firebase.auth.FirebaseUser;
  * @LinkUp App Idea Explanation
  * @Author: Anesu Maxwell Matanga
  * @ID: 20010613
+ * @Avatars I have made 3 avatars for you to use to test( Already made accounts)
+ * @Avatar1 Login Email: amaxkraals@gmail.com  Password: Anesu88
+ * @Avatar2 Login Email: hillaryjoy18@gmail.com  Password: Hills88
+ * @Avatar3 Login Email: bmtzrecords@gmail.com   Password: Bmtz88
+ * @Explanation
  *
+ * The LinkUp App was inspired by a clear digital gap: while many people have access to multiple social media platforms,
+ * meaningful friendships remain elusive. Popular, platforms such as Instagram and TikTok frequently
+ * fall short of creating genuine connections.
+ *
+ * LinkUp's current version(V1) allows users to swipe through profiles that highlight interests and location
+ * (restricted to city for safety). Users can read detailed profiles and participate in real-time chats.
+ * I used Firebase to implement strong authentication, and the Material library was crucial in keeping to
+ * Android's design requirements. Some icons were obtained from Icons.
+ *
+ * My vision for LinkUp's future is Ambitious. I plan to implement an algorithm that incorporates psychological
+ * insights to improve friendship suggestions based on profile compatibilities, creating genuine friendships.
+ *
+ * Certain envisioned functionality are still pending due to the constraint of 10 classes.
+ * Nonetheless, as a solo project, this software is a huge accomplishment and monument to my dedication.
+ * I hope you acknowledge the potential and effort behind LinkUp and also enjoy it :).
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -46,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         if(currentUser != null){
             //Open main activity if User already logged in using an Intent
             //Create Intent to open main activity
-            Intent loginIntent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent loginIntent = new Intent(getApplicationContext(), ProfileActivity.class);
             //Start the activity
             startActivity(loginIntent);
             //Close this activity
@@ -127,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                                     //Reset has queried
                                     ProfileActivity.hasQueriedFirestore = false;
                                     //Create Intent to open main activity
-                                    Intent loginIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                    Intent loginIntent = new Intent(getApplicationContext(), ProfileActivity.class);
                                     //Start the activity
                                     startActivity(loginIntent);
                                     //Close this activity

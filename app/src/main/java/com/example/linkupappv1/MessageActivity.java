@@ -108,7 +108,6 @@ public class MessageActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                         //Remove text from textBox
                         messageInputEditText.setText("");
-
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -133,6 +132,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
                 //If there is a document change(new messages)
                 for (DocumentChange documentChange : value.getDocumentChanges()) {
+                    Log.d("MA New Message1: ", "Document Changed, new message");
                     if(documentChange.getType() == DocumentChange.Type.ADDED) {
                         //If new message has been added notify adapter for data change
                         //ToDo Update the UI here for new message
@@ -140,6 +140,7 @@ public class MessageActivity extends AppCompatActivity {
                         //Add to the list of messages to be populated on the screen
                         messages.add(newMessage);
                         ProfileActivity.hasNewMessages = true;
+                        Log.d("MA New Message2: ", String.valueOf(ProfileActivity.hasNewMessages));
                     }
                 }
                 //Let the adapter know data has changed

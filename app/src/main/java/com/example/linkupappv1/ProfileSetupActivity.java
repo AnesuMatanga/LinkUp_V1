@@ -6,9 +6,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -184,7 +187,14 @@ public class ProfileSetupActivity extends AppCompatActivity {
         pProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pickProfileImage();
+                //Ask For permission
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                        requestPermissions(
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+                    else
+                        pickProfileImage();
+                }
             }
         });
     }
@@ -319,6 +329,28 @@ public class ProfileSetupActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    //Override onRequestPermission to check first so app functions perfectly
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           int[] grantResults){
+        //Check all permissions have been granted
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean granted = true;
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED){
+                granted = false;
+            }
+        }
+        if (granted){
+            Log.i(TAG, "Permission GRANTED, Initializing:::");
+            pickProfileImage();
+        } else {
+            Log.i(TAG, "Permission to pick an image NOT granted!");
+        }
+
     }
 
 

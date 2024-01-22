@@ -262,7 +262,7 @@ public class FriendRecommendationAdapter extends RecyclerView.Adapter<FriendReco
                                 //Direct to profile of clicked user
                                 friendRequestsDoc = FirebaseFirestore.getInstance().document("users/" + recomUserID[0] + "/friendRequests/" + friendUsername);
                             } else {
-                                //No doc found with username
+                                 //No doc found with username
                                 Log.d("FriendRecomAdapter", "No user found with that username");
                                 //Toast for debugging purposes
                                 Toast.makeText(holder.itemView.getContext(), "No user found with that username!",
